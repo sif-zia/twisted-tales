@@ -71,16 +71,12 @@ const Login = () => {
                         m: 1,
                       }}
                     >
-                      <InputLabel
-                        htmlFor="outlined-adornment-Email"
-                        color="primary"
-                      >
+                      <InputLabel htmlFor="outlined-adornment-Email">
                         Email
                       </InputLabel>
                       <OutlinedInput
                         id="outlined-adornment-Email"
                         label="Email"
-                        color="primary"
                       />
                     </FormControl>
                   </div>

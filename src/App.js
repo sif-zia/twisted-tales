@@ -1,6 +1,8 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
+import { createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 
 import Layout from "./components/Layout";
 import VisitorLayout from "./components/VisitorLayout";
@@ -48,8 +50,16 @@ function App() {
     };
   }, []);
 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: "#ff4c60",
+      },
+    },
+  });
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="Explore" element={<Explore />} />
@@ -62,7 +72,7 @@ function App() {
           <Route index element={<Register />} />
         </Route>
       </Routes>
-    </>
+    </ThemeProvider>
   );
 }
 
