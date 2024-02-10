@@ -1,7 +1,28 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import Grid from "@mui/material/Unstable_Grid2";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { Link } from 'react-router-dom'
+ 
 
 const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
     // Array of JavaScript file paths
     const jsFiles = [
@@ -35,10 +56,10 @@ const Register = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <a href="#">Register</a>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Contact Us
+                Register
               </li>
             </ol>
           </nav>
@@ -47,142 +68,147 @@ const Register = () => {
 
       <section className="contact-section pt-100 pb-100">
         <div className="container">
-          <div className="row gy-4 justify-cotnent-center align-items-center">
-            <div className="col-lg-5 pe-lg-5 pe-0">
-              <div className="contact-box">
-                <div className="title">
-                  <h3>Contact Us</h3>
-                  <p>
-                    Morbi quis elementum ex, id commodo odio. In maximus, augue
-                    europea vestibulum gomat.
-                  </p>
-                </div>
-                <div className="left-social">
-                  <ul>
-                    <li>
-                      <a href="https://www.facebook.com/">
-                        <i className="bx bxl-facebook"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://www.twitter.com/">
-                        <i className="bx bxl-twitter"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://www.pinterest.com/">
-                        <i className="bx bxl-pinterest-alt"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://www.instagram.com/">
-                        <i className="bx bxl-instagram"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="informations">
-                  <div className="single-info">
-                    <div className="icon">
-                      <i className="bi bi-telephone-fill"></i>
-                    </div>
-                    <div className="info">
-                      <a href="tel:05661111985">+880 566 1111 985</a>
-                      <a href="tel:06571111576">+880 657 1111 576</a>
-                    </div>
-                  </div>
-                  <div className="single-info">
-                    <div className="icon">
-                      <i className="bi bi-envelope"></i>
-                    </div>
-                    <div className="info">
-                      <a href="https://demo-egenslab.b-cdn.net/cdn-cgi/l/email-protection#4d24232b220d28352c203d2128632e2220">
-                        <span
-                          className="__cf_email__"
-                          data-cfemail="a5cccbc3cae5c0ddc4c8d5c9c08bc6cac8"
-                        >
-                          [email&#160;protected]
-                        </span>
-                      </a>
-                      <a href="https://demo-egenslab.b-cdn.net/cdn-cgi/l/email-protection#264f48404966555356564954520845494b">
-                        <span
-                          className="__cf_email__"
-                          data-cfemail="ee87808881ae9d9b9e9e819c9ac08d8183"
-                        >
-                          [email&#160;protected]
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="row gy-4 justify-content-center align-items-center">
             <div className="col-lg-7">
               <div className="form-title">
-                <h2>Have Any Questions</h2>
+                <Typography variant="h2">Create a New Account</Typography>
               </div>
-              <form className="contact-form">
+              <form className="">
                 <div className="row">
-                  <div className="col-12">
-                    <div className="form-inner">
-                      <input type="text" placeholder="Enter Your Name" />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-inner">
-                      <input type="email" placeholder="Enter your email" />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="form-inner">
-                      <input type="text" placeholder="Enter Your Subject" />
-                    </div>
-                  </div>
-                  <div className="col-12">
-                    <div className="form-inner">
-                      <textarea
-                        rows="5"
-                        placeholder="Enter Your Messege"
-                      ></textarea>
-                    </div>
-                  </div>
-                  <div className="col-12">
+                  <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                  >
+                    <Grid xs={12}>
+                      <FormControl
+                        fullWidth
+                        sx={{
+                          // Override styles based on screen size
+                          "@media (max-width: 600px)": {
+                            width: "90%",
+                          },
+                          "@media (max-width: 300px)": {
+                            width: "100%",
+                          },
+                          m: 1,
+                        }}
+                      >
+                        <InputLabel htmlFor="outlined-adornment-Name">
+                          Name
+                        </InputLabel>
+                        <OutlinedInput
+                          id="outlined-adornment-Name"
+                          label="Name"
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid xs={12}>
+                      <FormControl
+                        fullWidth
+                        sx={{
+                          // Override styles based on screen size
+                          "@media (max-width: 600px)": {
+                            width: "90%",
+                          },
+                          "@media (max-width: 300px)": {
+                            width: "100%",
+                          },
+                          m: 1,
+                        }}
+                      >
+                        <InputLabel htmlFor="outlined-adornment-Email">
+                          Email
+                        </InputLabel>
+                        <OutlinedInput
+                          id="outlined-adornment-Email"
+                          label="Email"
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid xs={12}>
+                      <FormControl
+                        variant="outlined"
+                        fullWidth
+                        sx={{
+                          // Override styles based on screen size
+                          "@media (max-width: 600px)": {
+                            width: "90%",
+                          },
+                          "@media (max-width: 300px)": {
+                            width: "100%",
+                          },
+                          m: 1,
+                        }}
+                      >
+                        <InputLabel htmlFor="outlined-adornment-password">
+                          Password
+                        </InputLabel>
+                        <OutlinedInput
+                          id="outlined-adornment-password"
+                          type={showPassword ? "text" : "password"}
+                          // endAdornment={
+                          //   <InputAdornment position="end">
+                          //     <IconButton
+                          //       aria-label="toggle password visibility"
+                          //       onClick={handleClickShowPassword}
+                          //       onMouseDown={handleMouseDownPassword}
+                          //       edge="end"
+                          //     >
+                          //       {showPassword ? (
+                          //         <VisibilityOff />
+                          //       ) : (
+                          //         <Visibility />
+                          //       )}
+                          //     </IconButton>
+                          //   </InputAdornment>
+                          // }
+                          label="Password"
+                        />
+                      </FormControl>
+                    </Grid>
+                    <Grid xs={12}>
+                      <FormControl
+                        variant="outlined"
+                        fullWidth
+                        sx={{
+                          // Override styles based on screen size
+                          "@media (max-width: 600px)": {
+                            width: "90%",
+                          },
+                          "@media (max-width: 300px)": {
+                            width: "100%",
+                          },
+                          m: 1,
+                        }}
+                      >
+                        <InputLabel htmlFor="outlined-adornment-RetypePassword">
+                          Retype Password
+                        </InputLabel>
+                        <OutlinedInput
+                          id="outlined-adornment-RetypePassword"
+                          type={showPassword ? "text" : "password"}
+                          label="Retype Password"
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+
+                  <div className="col-12" style={{ marginLeft: "10px" }}>
                     <button
+                      style={{ margin: "10px 0" }}
                       type="submit"
                       className="eg-btn btn--primary btn--lg"
                     >
-                      Send Message
+                      Register
                     </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="newsletter-section-1">
-        <div className="paper-fly-icon">
-          <img src="assets/images/icons/paper-fly.svg" alt="image" />
-        </div>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-xl-8 col-lg-10 col-md-10 col-sm-12 text-center">
-              <h2>Get the best blog stories into your inbox Connect Us now.</h2>
-              <form className="newsletter-from">
-                <div className="inner-form">
-                  <input type="email" placeholder="Enter Your Email..." />
-                  <button type="submit">
-                    Subscribe
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M15.6686 7.48076L0.811792 0.623786C0.575226 0.51636 0.292947 0.580359 0.12838 0.783782C-0.0373304 0.987206 -0.0430445 1.27634 0.114666 1.48548L5.00026 7.99961L0.114666 14.5137C-0.0430445 14.7229 -0.0373304 15.0131 0.127237 15.2154C0.238091 15.3537 0.403802 15.428 0.571797 15.428C0.652938 15.428 0.734079 15.4109 0.810649 15.3754L15.6674 8.51845C15.8709 8.42474 16 8.22246 16 7.99961C16 7.77675 15.8708 7.57447 15.6686 7.48076Z" />
-                    </svg>
-                  </button>
+                    <Typography variant="body1" sx={{ mt: 1 }}>
+                      Already have an account? <Link to="/Login">Login</Link>
+                    </Typography>
+                  
+
+                  </div>
                 </div>
               </form>
             </div>

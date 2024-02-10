@@ -4,8 +4,8 @@ import { Outlet } from "react-router-dom";
 const Layout = () => {
   return (
     <div>
-      <header>
-        <div className="egns-preloader">
+      <section>
+        {/* <div className="egns-preloader">
           <div className="sequence">
             <div className="seq-preloader">
               <svg
@@ -36,7 +36,7 @@ const Layout = () => {
               </svg>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="mobile-search">
           <div className="container">
@@ -571,7 +571,7 @@ const Layout = () => {
             </div>
           </div>
         </header>
-      </header>
+      </section>
       <main>
         <Outlet />
       </main>

@@ -1,10 +1,24 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import {Link} from "react-router-dom";
+import { Typography } from "@mui/material";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
     // Array of JavaScript file paths
     const jsFiles = [
@@ -82,6 +96,7 @@ const Login = () => {
                   </div>
                   <div style={{ padding: "10px 0" }}>
                     <FormControl
+                      variant="outlined"
                       fullWidth
                       sx={{
                         // Override styles based on screen size
@@ -94,11 +109,13 @@ const Login = () => {
                         m: 1,
                       }}
                     >
-                      <InputLabel htmlFor="outlined-adornment-Password">
+                      <InputLabel htmlFor="outlined-adornment-password">
                         Password
                       </InputLabel>
                       <OutlinedInput
-                        id="outlined-adornment-Password"
+                        id="outlined-adornment-password"
+                        type={showPassword ? "text" : "password"}
+                        
                         label="Password"
                       />
                     </FormControl>
@@ -111,6 +128,10 @@ const Login = () => {
                     >
                       Login
                     </button>
+
+                    <Typography variant="body1" sx={{ mt: 1 }}>
+                      Don't have any account? <Link to="/Register">Register</Link>
+                    </Typography>
                   </div>
                 </div>
               </form>

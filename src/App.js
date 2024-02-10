@@ -1,8 +1,7 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import { createTheme } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider, responsiveFontSizes } from "@mui/material/styles";
 
 import Layout from "./components/Layout";
 import VisitorLayout from "./components/VisitorLayout";
@@ -51,15 +50,29 @@ function App() {
   }, []);
 
   const theme = createTheme({
+    typography: {
+      h1: {
+        fontSize: '1.5rem',
+        // Add other styles as needed
+      },
+      h2: {
+        fontSize: '1.25rem',
+        fontWeight: 'bold',
+        // Add other styles as needed
+      },
+    },
+  
     palette: {
       primary: {
         main: "#ff4c60",
       },
     },
   });
+  const responsiveTheme = responsiveFontSizes(theme);
+
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={responsiveTheme}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="Explore" element={<Explore />} />
