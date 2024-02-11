@@ -147,22 +147,22 @@ const Register = () => {
                         <OutlinedInput
                           id="outlined-adornment-password"
                           type={showPassword ? "text" : "password"}
-                          // endAdornment={
-                          //   <InputAdornment position="end">
-                          //     <IconButton
-                          //       aria-label="toggle password visibility"
-                          //       onClick={handleClickShowPassword}
-                          //       onMouseDown={handleMouseDownPassword}
-                          //       edge="end"
-                          //     >
-                          //       {showPassword ? (
-                          //         <VisibilityOff />
-                          //       ) : (
-                          //         <Visibility />
-                          //       )}
-                          //     </IconButton>
-                          //   </InputAdornment>
-                          // }
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
                           label="Password"
                         />
                       </FormControl>
@@ -188,7 +188,24 @@ const Register = () => {
                         <OutlinedInput
                           id="outlined-adornment-RetypePassword"
                           type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
                           label="Retype Password"
+
                         />
                       </FormControl>
                     </Grid>

@@ -52,7 +52,8 @@ function App() {
   const theme = createTheme({
     typography: {
       h1: {
-        fontSize: '1.5rem',
+        fontSize: '2rem',
+        fontWeight: 'bold',
         // Add other styles as needed
       },
       h2: {
@@ -60,6 +61,12 @@ function App() {
         fontWeight: 'bold',
         // Add other styles as needed
       },
+      h3:{
+        fontFamily: 'Satoshi,sans-serif', 
+        fontSize: "40px",
+        color: "black", 
+        fontWeight: "bold"
+      }
     },
   
     palette: {

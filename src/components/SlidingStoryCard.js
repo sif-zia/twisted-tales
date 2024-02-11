@@ -6,12 +6,13 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Paper } from "@mui/material";
-
+import { motion } from "framer-motion"
 
 const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
     
 
     return ( 
+        <motion.div whileHover={{ scale: 1.1 }} style={{padding:"25px 0px", margin:"0px 10px"}}>
         <Paper elevation={3} 
         sx={{
             "@media (max-width: 600px)": {
@@ -20,8 +21,7 @@ const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
             "@media (max-width: 300px)": {
               width: "100%",
             },
-            m: 1,
-            mt:2,
+           
           }}> 
         <Card>
         <CardMedia
@@ -44,6 +44,7 @@ const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
         </CardActions>
       </Card>
       </Paper>
+      </motion.div>
     );
 }
  

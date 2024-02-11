@@ -3,13 +3,16 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import SlidingStoryCard from "../components/SlidingStoryCard";
 import { Box } from "@mui/material";
-
+import Typography from '@mui/material/Typography';
+import { Stack } from "@mui/material";
+import SlidingCategoryCard from "../components/SlidingCategoryCard";
+import ButtonGroup from "../components/ButtonGroup";
 const Explore = () => {
-  const responsive = {
+  const StoryResponsive = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
       breakpoint: { max: 4000, min: 1024 },
-      items: 5,
+      items: 4,
     },
     desktop: {
       breakpoint: { max: 1024, min: 800 },
@@ -18,6 +21,26 @@ const Explore = () => {
     tablet: {
       breakpoint: { max: 800, min: 464 },
       items: 1,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+
+  const CategoryResponsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 1024 },
+      items: 4,
+    },
+    desktop: {
+      breakpoint: { max: 1024, min: 800 },
+      items: 3,
+    },
+    tablet: {
+      breakpoint: { max: 800, min: 464 },
+      items: 2,
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
@@ -34,15 +57,27 @@ const Explore = () => {
     initiator: "Hamnanana",
   };
 
+  const CategoryData = {
+    title: "Suspense",
+    NoOfStories: 900,
+    imageURL: "https://source.unsplash.com/random",
+    NoOfReads: 200,
+  };
+
+
   return (
     <div>
-      <Box sx={{ margin: "0 50px" }}>
+
+      <Typography sx={{ margin: '25px 25px 0px 25px' }} variant="h3">Trending Stories</Typography>
+      <Box sx={{ margin: '0px 15px' }} >
         <Carousel
-          responsive={responsive}
+          responsive={StoryResponsive}
           infinite={true}
           autoPlay={true}
-          autoPlaySpeed={3000}
+          autoPlaySpeed={3500}
+
         >
+
           <SlidingStoryCard
             title={data.title}
             description={data.description}
@@ -100,187 +135,54 @@ const Explore = () => {
         </Carousel>
       </Box>
 
-      <section className="category-section pt-100">
-        <div className="container">
-          <div className="row align-items-center mb-40">
-            <div className="col-lg-9">
-              <div className="section-title-1">
-                <h2>Entire Topic</h2>
-                <div className="subtitle">
-                  <svg
-                    width="11"
-                    height="14"
-                    viewBox="0 0 11 14"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M7.15888 13.1844C8.73336 10.6029 8.07416 7.35423 5.59136 5.46029C5.58991 5.45922 5.58846 5.45788 5.5873 5.45708L5.59803 5.48172L5.59629 5.5002C6.08003 6.68033 6.01217 7.97589 5.41793 9.08745L4.99915 9.87117L4.87068 9.00522C4.78338 8.41784 4.54354 7.85751 4.17407 7.3778H4.11578L4.08503 7.29744C4.08938 8.19499 3.88464 9.07915 3.48297 9.91322C2.95602 11.0047 3.03345 12.2633 3.69033 13.2806L4.14362 13.9829L3.3281 13.6647C1.98331 13.1399 0.908237 12.1291 0.378384 10.8914C-0.215271 9.50931 -0.105357 7.90679 0.672747 6.6056C1.07847 5.92875 1.36269 5.21012 1.51784 4.46926L1.66952 3.74314L2.0564 4.39079C2.24113 4.69961 2.37715 5.03388 2.46154 5.38503L2.47024 5.39333L2.47923 5.44958L2.48765 5.44717C3.64654 4.02518 4.34083 2.25579 4.44204 0.464176L4.46814 0L4.88982 0.253917C6.61075 1.28967 7.80589 2.95139 8.17508 4.81853L8.18349 4.85684L8.18784 4.86273L8.20669 4.83809C8.54398 4.42668 8.72204 3.93732 8.72204 3.42226V2.62461L9.2432 3.26048C10.4549 4.73845 11.0761 6.57185 10.9926 8.42319C10.8899 10.6024 9.6031 12.5151 7.5501 13.5514L6.66121 14L7.15888 13.1844Z" />
-                  </svg>
-                  <span>Category</span>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 d-flex justify-content-end">
-              <div className="slider-arrows arrow-style-1 text-center d-lg-flex d-none flex-row justify-content-center align-items-center gap-4">
-                <div
-                  className="category1-next swiper-next-arrow"
-                  tabindex="0"
-                  role="button"
-                  aria-label="Next slide"
-                >
-                  <i className="bi bi-arrow-left"></i>
-                </div>
-                <div
-                  className="category1-prev swiper-prev-arrow"
-                  tabindex="0"
-                  role="button"
-                  aria-label="Previous slide"
-                >
-                  <i className="bi bi-arrow-right"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="row justify-content-center">
-            <div className="swiper category-1-slider">
-              <div className="swiper-wrapper">
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-1.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Creative</a>
-                      </h4>
-                      <ul>
-                        <li>800 Article</li>
-                        <li>3.9k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-2.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Life Style</a>
-                      </h4>
-                      <ul>
-                        <li>700 Article</li>
-                        <li>1.6k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-3.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Fashion</a>
-                      </h4>
-                      <ul>
-                        <li>680 Article</li>
-                        <li>2.8k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-4.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Travel</a>
-                      </h4>
-                      <ul>
-                        <li>900 Article</li>
-                        <li>6.2k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-5.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Photography</a>
-                      </h4>
-                      <ul>
-                        <li>800 Article</li>
-                        <li>3.9k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-6.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Fitness</a>
-                      </h4>
-                      <ul>
-                        <li>800 Article</li>
-                        <li>3.9k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="category-1">
-                    <a href="blog-classic.html" className="image">
-                      <img
-                        src="assets/images/category/cate1-7.jpg"
-                        alt="image"
-                      />
-                    </a>
-                    <div className="content">
-                      <h4>
-                        <a href="blog-classic.html">Real State</a>
-                      </h4>
-                      <ul>
-                        <li>800 Article</li>
-                        <li>3.9k View</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+
+      <Typography sx={{margin: '110px 7vw 25px 7vw' }} variant="h3" >Genre</Typography>
+      <Box sx={{ margin: '0 6.5vw' }} >
+        <Carousel
+          responsive={CategoryResponsive}
+          infinite={true}
+          customButtonGroup={<ButtonGroup />}
+          renderButtonGroupOutside={true}
+          arrows={false}
+        >
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+        </Carousel>
+      </Box>
+
       <section className="latest-blog-section pt-100 pb-100">
         <div className="container">
           <div className="row align-items-center mb-40">
@@ -1785,7 +1687,55 @@ const Explore = () => {
           </div>
         </div>
       </div>
-      <section className="recent-post-section pt-120">
+
+      <Typography sx={{ margin: '110px 7vw 25px 7vw' }} variant="h3">Top Picks For You</Typography>
+      <Box sx={{ margin: '0 6.5vw' }} >
+        <Carousel
+          responsive={CategoryResponsive}
+          infinite={true}
+          customButtonGroup={<ButtonGroup />}
+          renderButtonGroupOutside={true}
+          arrows={false}
+        >
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+          <SlidingCategoryCard
+            title={CategoryData.title}
+            NoOfStories={CategoryData.NoOfStories}
+            imageURL={CategoryData.imageURL}
+            NoOfReads={CategoryData.NoOfReads}
+          />
+
+        </Carousel>
+      </Box>
+
+      {/* <section className="recent-post-section pt-120">
         <div className="container">
           <div className="row align-items-center mb-40">
             <div className="col-lg-9">
@@ -2101,7 +2051,7 @@ const Explore = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       <section className="video-blog pt-100">
         <div className="container">
           <div className="row align-items-center g-4 mb-40">
