@@ -572,7 +572,7 @@ const Layout = () => {
           </div>
         </header>
       </section>
-      <main>
+      <main style={{backgroundColor: "#FAF9F6"}}>
         <Outlet />
       </main>
       <footer className="style-1">

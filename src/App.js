@@ -1,7 +1,11 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import { createTheme, ThemeProvider, responsiveFontSizes } from "@mui/material/styles";
+import {
+  createTheme,
+  ThemeProvider,
+  responsiveFontSizes,
+} from "@mui/material/styles";
 
 import Layout from "./components/Layout";
 import VisitorLayout from "./components/VisitorLayout";
@@ -10,6 +14,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Explore from "./pages/Explore";
 import Chapter from "./pages/Chapter";
+import Search from "./pages/Search";
 
 function App() {
   useEffect(() => {
@@ -52,23 +57,31 @@ function App() {
   const theme = createTheme({
     typography: {
       h1: {
-        fontSize: '2rem',
-        fontWeight: 'bold',
+        fontSize: "2rem",
+        fontWeight: "bold",
         // Add other styles as needed
       },
       h2: {
-        fontSize: '1.25rem',
-        fontWeight: 'bold',
+        fontSize: "1.25rem",
+        fontWeight: "bold",
         // Add other styles as needed
       },
-      h3:{
-        fontFamily: 'Satoshi,sans-serif', 
+      h3: {
+        fontFamily: "Satoshi,sans-serif",
         fontSize: "40px",
-        color: "black", 
-        fontWeight: "bold"
-      }
+        color: "black",
+        fontWeight: "bold",
+      },
+      subtitle2: {
+        fontFamily: "var(--font-inter)",
+        fontStyle: "italic",
+        fontWeight: "500",
+        fontSize: "17px",
+        textTransform: "capitalize",
+        color: "var(--primary-one)",
+      },
     },
-  
+
     palette: {
       primary: {
         main: "#ff4c60",
@@ -77,13 +90,13 @@ function App() {
   });
   const responsiveTheme = responsiveFontSizes(theme);
 
-
   return (
     <ThemeProvider theme={responsiveTheme}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="Explore" element={<Explore />} />
           <Route path="Chapter" element={<Chapter />} />
+          <Route path="Search" element={<Search />} />
         </Route>
         <Route path="/Login" element={<VisitorLayout />}>
           <Route index element={<Login />} />
