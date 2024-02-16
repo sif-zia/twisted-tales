@@ -1,5 +1,14 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import SignpostIcon from "@mui/icons-material/Signpost";
+import { Stack } from "@mui/system";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Button from "@mui/material/Button";
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import { Typography } from "@mui/material";
 
 const Chapter = () => {
   useEffect(() => {
@@ -28,6 +37,11 @@ const Chapter = () => {
       });
     };
   }, []);
+
+ const [isLiked, setLiked] = useState(null)
+
+ 
+
 
   return (
     <>
@@ -114,32 +128,6 @@ const Chapter = () => {
                         non velit odio.
                       </p>
                       <div className="col-lg-12">
-                        <div className="row g-4 mb-40">
-                          <div className="col-md-4">
-                            <div className="sidebar-dt-img">
-                              <img
-                                src="assets/images/post-format/post-format-left-sidebar-img1.jpg"
-                                alt
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-4">
-                            <div className="sidebar-dt-img">
-                              <img
-                                src="assets/images/post-format/post-format-left-sidebar-img2.jpg"
-                                alt
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-4">
-                            <div className="sidebar-dt-img">
-                              <img
-                                src="assets/images/post-format/post-format-left-sidebar-img3.jpg"
-                                alt
-                              />
-                            </div>
-                          </div>
-                        </div>
                         <h3>Our Begin Now To Beingonl.</h3>
                         <p>
                           urna Aenean onewaryzo eleifend vitae tellus a
@@ -235,252 +223,51 @@ const Chapter = () => {
                 </div>
               </div>
             </div>
-            <div className="post-tags-social">
-              <div className="row">
-                <div className="col-lg-6 col-md-6 col-sm-10">
-                  <div className="tags">
-                    <ul>
-                      <li>
-                        <a href="blog-classic.html">
-                          {" "}
-                          <span>#</span> Artist
-                        </a>
-                      </li>
-                      <li>
-                        <a href="blog-classic.html">
-                          <span>#</span> Portfolio
-                        </a>
-                      </li>
-                      <li>
-                        <a href="blog-classic.html">
-                          <span>#</span> Crypto
-                        </a>
-                      </li>
-                      <li>
-                        <a href="blog-classic.html">
-                          <span>#</span> Digital Token
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="col-lg-6 col-md-6 col-sm-10">
-                  <div className="social">
-                    <p>Share On:</p>
-                    <ul>
-                      <li>
-                        <a href="https://www.facebook.com/">
-                          <i className="bx bxl-facebook"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="https://www.twitter.com/">
-                          <i className="bx bxl-twitter"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="https://www.pinterest.com/">
-                          <i className="bx bxl-pinterest-alt"></i>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="https://www.instagram.com/">
-                          <i className="bx bxl-instagram"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row mb-120">
-              <div className="col-lg-12">
-                <div className="details-navigation">
-                  <div className="single-navigation">
-                    <div className="content">
-                      <a href="#">Previous</a>
-                      <h4>
-                        <a href="#">
-                          Feugiat Varius Mattis Mass Enim Est Egestas.
-                        </a>
-                      </h4>
-                    </div>
-                    <a href="#" className="img">
-                      <img
-                        src="assets/images/post-format/post-format-left-sidebar-img1.jpg"
-                        alt
-                      />
-                      <div className="arrow">
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 13 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M0 1H12M12 1V13M12 1L0.5 12"></path>
-                        </svg>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="single-navigation two">
-                    <a href="#" className="img">
-                      <img
-                        src="assets/images/post-format/post-format-left-sidebar-img2.jpg"
-                        alt
-                      />
-                      <div className="arrow">
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 13 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M0 1H12M12 1V13M12 1L0.5 12"></path>
-                        </svg>
-                      </div>
-                    </a>
-                    <div className="content">
-                      <a href="#">NEXT </a>
-                      <h4>
-                        <a href="#">
-                          Donec Finibus Laoreet Exte Eu Pellentesque.
-                        </a>
-                      </h4>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-9">
-                <div className="comment-section">
-                  <div className="comment-title">
-                    <h4>2 Comment</h4>
-                    <div className="dash"></div>
-                  </div>
-                  <ul className="author-comment">
-                    <li>
-                      <div className="author-img">
-                        <img
-                          src="assets/images/post-gallery-format/author-comment-img1.jpg"
-                          alt
-                        />
-                      </div>
-                      <div className="comment-content">
-                        <div className="comment-top">
-                          <h5>Polard Girdet</h5>
-                          <p>02 April,2023</p>
-                        </div>
-                        <p>
-                          odio tellus, dignissim fermentumara purus nec,
-                          consequat dapibus metus.Vivamusut urna worlda mauris,
-                          faucibus at egestas quis, fermentum egetonav neque.
-                          Duisonajt pharetra lectus nec risusonl
-                        </p>
-                        <a href>
-                          <i className="bi bi-arrow-return-right"></i>
-                          Reply
-                        </a>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="author-img">
-                        <img
-                          src="assets/images/post-gallery-format/author-comment-img2.jpg"
-                          alt
-                        />
-                      </div>
-                      <div className="comment-content">
-                        <div className="comment-top">
-                          <h5>Ezekiel Miles</h5>
-                          <p>02 April,2023</p>
-                        </div>
-                        <p>
-                          odio tellus, dignissim fermentumara purus nec,
-                          consequat dapibus metus.Vivamusut urna worlda mauris,
-                          faucibus at egestas quis, fermentum egetonav neque.
-                          Duisonajt pharetra lectus nec risusonl
-                        </p>
-                        <a href>
-                          <i className="bi bi-arrow-return-right"></i>
-                          Reply
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                  <div className="comment-title">
-                    <h4>Leave A Comment</h4>
-                    <div className="dash"></div>
-                  </div>
-                  <form className="contact-form">
-                    <div className="row">
-                      <div className="col-12">
-                        <div className="form-inner">
-                          <input type="text" placeholder="Enter Your Name" />
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-inner">
-                          <input type="email" placeholder="Enter your email" />
-                        </div>
-                      </div>
-                      <div className="col-6">
-                        <div className="form-inner">
-                          <input type="text" placeholder="Subject" />
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <div className="form-inner">
-                          <textarea
-                            rows="5"
-                            placeholder="Your Messege"
-                          ></textarea>
-                        </div>
-                      </div>
-                      <div className="col-12">
-                        <button
-                          type="submit"
-                          className="eg-btn btn--primary btn--lg"
-                        >
-                          Post a Comment
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="newsletter-section-1">
-        <div className="paper-fly-icon">
-          <img src="assets/images/icons/paper-fly.svg" alt="image" />
-        </div>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-xl-8 col-lg-10 col-md-10 col-sm-12 text-center">
-              <h2>Get the best blog stories into your inbox Connect Us now.</h2>
-              <form className="newsletter-from">
-                <div className="inner-form">
-                  <input type="email" placeholder="Enter Your Email..." />
-                  <button type="submit">
-                    Subscribe
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M15.6686 7.48076L0.811792 0.623786C0.575226 0.51636 0.292947 0.580359 0.12838 0.783782C-0.0373304 0.987206 -0.0430445 1.27634 0.114666 1.48548L5.00026 7.99961L0.114666 14.5137C-0.0430445 14.7229 -0.0373304 15.0131 0.127237 15.2154C0.238091 15.3537 0.403802 15.428 0.571797 15.428C0.652938 15.428 0.734079 15.4109 0.810649 15.3754L15.6674 8.51845C15.8709 8.42474 16 8.22246 16 7.99961C16 7.77675 15.8708 7.57447 15.6686 7.48076Z" />
-                    </svg>
-                  </button>
+            <Stack direction="row" padding="0px 50px" alignItems={"center"} justifyContent={"space-between"} >
+              <Stack
+                direction={"row"}
+              >
+                
+                <Button onClick={()=> (
+                  isLiked===true ?  setLiked(null) : setLiked(true)
+                 
+                )}>
+                  {isLiked===true ? <ThumbUpIcon/>: <ThumbUpOutlinedIcon/>}
+                  <span style={{color:"primary", fontWeight:"bold" , marginLeft: "10px", fontSize:"20px"}}>250</span>
+                  </Button>
+
+
+                <Button onClick={()=> (
+                  isLiked===false ?  setLiked(null) : setLiked(false)
+                )}>
+                {isLiked===false ?  <ThumbDownAltIcon/>:<ThumbDownOffAltOutlinedIcon/> }
+                <span style={{color:"primary", fontWeight:"bold" , marginLeft: "10px", fontSize:"20px"}}>10</span>
+                </Button>
+              </Stack>
+
+              <div className="details-navigation">
+                <div className="single-navigation two">
+                  <a href="#" className="img">
+                    <img src="assets/images/roadmap.png" alt />
+                    <div className="arrow">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 13 13"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M0 1H12M12 1V13M12 1L0.5 12"></path>
+                      </svg>
+                    </div>
+                  </a>
+                  <div className="content">
+                    <a href="#">Back to Roadmap </a>
+                  </div>
                 </div>
-              </form>
-            </div>
+              </div>
+            </Stack>
           </div>
         </div>
       </section>

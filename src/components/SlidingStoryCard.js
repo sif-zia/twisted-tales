@@ -12,7 +12,7 @@ const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
     
 
     return ( 
-        <motion.div whileHover={{ scale: 1.1 }} style={{padding:"25px 0px", margin:"0px 10px"}}>
+        <motion.div whileHover={{ scale: 1.1}} style={{padding:"25px 0px", margin:"0px 12px"}}>
         <Paper elevation={3} 
         sx={{
             "@media (max-width: 600px)": {

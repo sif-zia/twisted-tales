@@ -80,6 +80,7 @@ function App() {
         textTransform: "capitalize",
         color: "var(--primary-one)",
       },
+      
     },
 
     palette: {
@@ -94,7 +95,7 @@ function App() {
     <ThemeProvider theme={responsiveTheme}>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="Explore" element={<Explore />} />
+          <Route exact path="/" element={<Explore />} />
           <Route path="Chapter" element={<Chapter />} />
           <Route path="Search" element={<Search />} />
         </Route>
