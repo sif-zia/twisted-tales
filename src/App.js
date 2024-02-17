@@ -87,6 +87,9 @@ function App() {
       primary: {
         main: "#ff4c60",
       },
+      secondary: {
+        main: "#F2F2DE",
+      },
     },
   });
   const responsiveTheme = responsiveFontSizes(theme);
