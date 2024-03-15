@@ -8,10 +8,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Unstable_Grid2";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link } from 'react-router-dom'
+import { useDispatch } from "react-redux";
+import { setPage } from "../slices/navbarSlice";
  
 
 const Register = () => {
@@ -22,6 +22,10 @@ const Register = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  
+  const dispatch = useDispatch();
+
+  dispatch(setPage("register"));
 
   useEffect(() => {
     // Array of JavaScript file paths

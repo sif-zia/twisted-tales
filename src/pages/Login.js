@@ -9,6 +9,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import {Link} from "react-router-dom";
 import { Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { setPage } from "../slices/navbarSlice";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +20,10 @@ const Login = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  
+  const dispatch = useDispatch();
+
+  dispatch(setPage("login"));
 
   useEffect(() => {
     // Array of JavaScript file paths

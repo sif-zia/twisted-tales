@@ -14,16 +14,22 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Stack } from '@mui/material';
 import Sidebar from "./Sidebar";
-import Logo from '../components/Logo'
+import { useSelector } from "react-redux";
+import { getPage } from "../slices/navbarSlice";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
     const pages = ['Explore', 'Search', 'Add Story'];
+    const links = ['/', '/Search', '#'];
     const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
     const [isOpen, setOpen] = React.useState(false);
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+    const crrPage = useSelector(getPage);
+
+    const navigate = useNavigate();
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -71,11 +77,11 @@ const NavBar = () => {
                             }}
                             >Twisted Tales</Typography>
                         <Stack direction="row" justifyContent={"center"} spacing={7} sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                            {pages.map((page) => (
+                            {pages.map((page, index) => (
                                 <Button
                                     key={page}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{ my: 2, color: 'black', display: 'block', fontFamily: '"Dosis", sans-serif', textTransform: 'none', fontSize: "18px" }}
+                                    onClick={() => navigate(links[index])}
+                                    sx={{ my: 2, color: (crrPage === page.toLowerCase() ? "primary" : "black"), display: 'block', fontFamily: '"Dosis", sans-serif', textTransform: 'none', fontSize: "18px" }}
                                 >
                                     {page}
                                 </Button>
@@ -116,7 +122,7 @@ const NavBar = () => {
             </AppBar>
 
 
-            <Sidebar isOpen={isOpen} setOpen={setOpen} pages={pages} />
+            <Sidebar isOpen={isOpen} setOpen={setOpen} pages={pages} links={links} />
         </>
     );
 }

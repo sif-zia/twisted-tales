@@ -1,30 +1,23 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import SearchIcon from '@mui/icons-material/Search';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getPage } from '../slices/navbarSlice';
 
 const drawerWidth = 240;
-
-
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -36,22 +29,22 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-const SidebarIcons=(index)=>{
-    if (index==0){
-        return (<PostAddIcon/>)
+const SidebarIcons=(index, iconColor)=>{
+    if (index===0){
+        return (<PostAddIcon color={iconColor}/>)
     }
-    if (index==1){
-        return (<SearchIcon/>)
+    if (index===1){
+        return (<SearchIcon color={iconColor}/>)
     }
-    if (index==2){
-        return (<HomeOutlinedIcon/>)
+    if (index===2){
+        return (<HomeOutlinedIcon color={iconColor}/>)
     }
 };
 
-const Sidebar = ({isOpen,setOpen,pages}) => {
+const Sidebar = ({isOpen, setOpen, pages, links}) => {
     const theme = useTheme();
-    
-  
+    const navigate = useNavigate();
+    const crrPage = useSelector(getPage);
   
     const handleDrawerClose = () => {
       setOpen(false);
@@ -85,11 +78,11 @@ const Sidebar = ({isOpen,setOpen,pages}) => {
         <List>
           {pages.map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton onClick={() => navigate(links[index])}>
                 <ListItemIcon>
-                  {SidebarIcons(index)}
+                  {SidebarIcons(index, (crrPage === text.toLowerCase() ? "primary" : "black"))}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={text} primaryTypographyProps={{color: (crrPage === text.toLowerCase() ? "primary" : "black")}}/>
               </ListItemButton>
             </ListItem>
           ))}

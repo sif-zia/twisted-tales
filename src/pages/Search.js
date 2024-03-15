@@ -17,6 +17,8 @@ import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { useMediaQuery } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
+import { useDispatch } from "react-redux";
+import { setPage } from "../slices/navbarSlice";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -61,6 +63,9 @@ const searchResultData = {
 
 
 const Search = () => {
+  const dispatch = useDispatch();
+  dispatch(setPage("search"));
+
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
 

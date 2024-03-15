@@ -11,8 +11,13 @@ import BestSellers from "../components/BestSellers";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import RecentStoryCard from "../components/RecentStoryCard";
 import AuthorOfTheMonth from "../components/AuthorOfTheMonth";
+import { useDispatch } from "react-redux";
+import { setPage } from "../slices/navbarSlice";
 
 const Explore = () => {
+  const dispatch = useDispatch();
+
+  dispatch(setPage("explore"));
   const StoryResponsive = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
