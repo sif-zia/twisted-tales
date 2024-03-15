@@ -31,13 +31,13 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const SidebarIcons=(index, iconColor)=>{
     if (index===0){
-        return (<PostAddIcon color={iconColor}/>)
+      return (<HomeOutlinedIcon color={iconColor}/>)
     }
     if (index===1){
         return (<SearchIcon color={iconColor}/>)
     }
     if (index===2){
-        return (<HomeOutlinedIcon color={iconColor}/>)
+      return (<PostAddIcon color={iconColor}/>)
     }
 };
 

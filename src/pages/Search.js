@@ -5,7 +5,6 @@ import {
   OutlinedInput,
   Grid,
   Stack,
-  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import SearchItem from "../components/SearchItem";

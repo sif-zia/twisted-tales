@@ -16,6 +16,8 @@ import Explore from "./pages/Explore";
 import Chapter from "./pages/Chapter";
 import Search from "./pages/Search";
 
+import AddStory from "./pages/AddStory";
+
 function App() {
   useEffect(() => {
     // Array of JavaScript file paths
@@ -101,6 +103,7 @@ function App() {
           <Route exact path="/" element={<Explore />} />
           <Route path="Chapter" element={<Chapter />} />
           <Route path="Search" element={<Search />} />
+          <Route path="AddStory" element={<AddStory />} />
         </Route>
         <Route path="/Login" element={<VisitorLayout />}>
           <Route index element={<Login />} />

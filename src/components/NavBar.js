@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
     const pages = ['Explore', 'Search', 'Add Story'];
-    const links = ['/', '/Search', '#'];
+    const links = ['/', '/Search', '/AddStory'];
     const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
     const [isOpen, setOpen] = React.useState(false);
 
