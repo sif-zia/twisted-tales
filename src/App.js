@@ -15,7 +15,7 @@ import Register from "./pages/Register";
 import Explore from "./pages/Explore";
 import Chapter from "./pages/Chapter";
 import Search from "./pages/Search";
-
+import AddChapter from "./pages/AddChapter";
 import AddStory from "./pages/AddStory";
 
 function App() {
@@ -104,6 +104,7 @@ function App() {
           <Route path="Chapter" element={<Chapter />} />
           <Route path="Search" element={<Search />} />
           <Route path="AddStory" element={<AddStory />} />
+          <Route path="AddChapter" element={<AddChapter />} />
         </Route>
         <Route path="/Login" element={<VisitorLayout />}>
           <Route index element={<Login />} />
