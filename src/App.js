@@ -17,6 +17,7 @@ import Chapter from "./pages/Chapter";
 import Search from "./pages/Search";
 import AddChapter from "./pages/AddChapter";
 import AddStory from "./pages/AddStory";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   useEffect(() => {
@@ -105,6 +106,8 @@ function App() {
           <Route path="Search" element={<Search />} />
           <Route path="AddStory" element={<AddStory />} />
           <Route path="AddChapter" element={<AddChapter />} />
+          <Route path="UserProfile" element={<UserProfile />} />
+
         </Route>
         <Route path="/Login" element={<VisitorLayout />}>
           <Route index element={<Login />} />

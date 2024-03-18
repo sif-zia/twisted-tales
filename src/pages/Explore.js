@@ -130,7 +130,7 @@ const Explore = () => {
           infinite={true}
           autoPlay={true}
           autoPlaySpeed={3500}
-		  removeArrowOnDeviceType={["mobile"]}
+          removeArrowOnDeviceType={["mobile"]}
         >
           <SlidingStoryCard
             title={data.title}
@@ -255,7 +255,9 @@ const Explore = () => {
             <div className="col-lg-12">
               <div className="section-title-2">
                 <div className="titel">
-                  <h4 style={{ fontSize: "30px" }}>Latest</h4>
+                  <Typography variant="h3">
+                    Latest
+                  </Typography>
                   <div className="dash"></div>
                 </div>
                 <div className="col-lg-3 d-flex justify-content-lg-end justify-content-center">
@@ -304,8 +306,8 @@ const Explore = () => {
                 <div className="dash"></div>
               </Stack>
               <div className="another-post-area mb-50">
-				<AuthorOfTheMonth/>
-			  </div>
+                <AuthorOfTheMonth />
+              </div>
             </Stack>
           </div>
         </div>

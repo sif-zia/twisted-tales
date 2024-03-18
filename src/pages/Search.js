@@ -79,7 +79,7 @@ const Search = () => {
   };
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
-  const isDesktop = useMediaQuery('(min-width: 1700px)');
+  const isDesktop = useMediaQuery('(min-width: 1500px)');
 
 
   return (

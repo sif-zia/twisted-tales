@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useRef } from "react";
 const NextChapter = [{ name: "haha", id: 1 },
                     { name: "wowww", id: 2 },
-                    { name: "grapeee", id: 3 }];
+                    { name: "grapeee", id: 3 }]; {/*Show chapters at current and greater depth only */}
 
 const StoryName="Mystory"
 const AddChapter = () => {
