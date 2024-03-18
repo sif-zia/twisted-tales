@@ -51,6 +51,16 @@ const AddChapter = () => {
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
+            <div className="breadcrumb-section">
+                <div className="container">
+                    <nav aria-label="breadcrumb">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index-2.html">Story</a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Add Chapter</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
             <Box
                 sx={{
                     margin: {

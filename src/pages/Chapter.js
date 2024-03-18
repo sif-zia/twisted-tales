@@ -50,10 +50,10 @@ const Chapter = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <a href="#">Story</a>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Post Format 05
+                Chapter
               </li>
             </ol>
           </nav>

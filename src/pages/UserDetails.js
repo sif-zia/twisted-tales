@@ -1,9 +1,10 @@
 import { Button, Grid, Typography, useMediaQuery } from "@mui/material";
 import { Stack } from "@mui/system";
 import SearchItem from "../components/SearchItem";
+import { useDispatch } from "react-redux";
+import { setPage } from "../slices/navbarSlice";
 
-
-const UserProfile = () => {
+const UserDetails = () => {
     const isDesktop = useMediaQuery('(min-width: 1500px)');
 
     const searchResultData = {
@@ -12,6 +13,9 @@ const UserProfile = () => {
         initiatorName: "Hamnana",
         genre: "Comedy"
     }
+
+    const dispatch = useDispatch();
+    dispatch(setPage("user details"));
 
     return (
 
@@ -31,7 +35,7 @@ const UserProfile = () => {
             </div>
 
 
-            <section className="author-section pt-100 pb-100">
+            <section className="author-section pt-50 pb-100">
                 <div className="container">
                     <div className="row gy-2">
                         <div className="col-lg-12">
@@ -63,7 +67,7 @@ const UserProfile = () => {
                         <div className="col-lg-12">
                             <Grid container direction={isDesktop ? 'row' : 'column'} spacing={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
                                 <Grid item xs={6}>
-                                    <Typography variant="h3" align="center" sx={{my:"25px"}}>
+                                    <Typography variant="h1" align="center" sx={{my:"25px"}}>
                                         Initiated Plots
                                     </Typography>
                                     <Stack direction="column" spacing={2}>
@@ -76,7 +80,7 @@ const UserProfile = () => {
                                     </Stack>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="h3" align="center" sx={{my:"25px"}}>
+                                    <Typography variant="h1" align="center" sx={{my:"25px"}}>
                                         Composed Chapters
                                     </Typography>
                                     <Stack direction="column" spacing={2}>
@@ -101,4 +105,4 @@ const UserProfile = () => {
     );
 }
 
-export default UserProfile;
+export default UserDetails;

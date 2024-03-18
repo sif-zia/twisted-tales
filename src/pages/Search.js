@@ -83,6 +83,21 @@ const Search = () => {
 
 
   return (
+    <div>
+      <div className="breadcrumb-section">
+        <div className="container">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                <a href="#">Story</a>
+              </li>
+              <li className="breadcrumb-item active" aria-current="page">
+                Search
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
     <Grid container >
       <Grid item xs={1}></Grid>
       <Grid item container xs={10}>
@@ -176,6 +191,8 @@ const Search = () => {
       </Grid>
       <Grid item xs={1}></Grid>
     </Grid>
+    </div>
+
   );
 };
 

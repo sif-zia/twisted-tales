@@ -43,8 +43,20 @@ const AddStory = () => {
   const dispatch = useDispatch();
   dispatch(setPage("add story"));
 
+
   return (
+    
     <div style={{ width: "100%", height: "100%" }}>
+      <div className="breadcrumb-section">
+                <div className="container">
+                    <nav aria-label="breadcrumb">
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item"><a href="index-2.html">Story</a></li>
+                            <li className="breadcrumb-item active" aria-current="page">Add Story</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
       <Box
         sx={{
           margin: {
@@ -70,7 +82,6 @@ const AddStory = () => {
               multiline
               label="Description"
               id="desc"
-              rows={3}
             />
           </Grid>
           <Grid item xs={type === true ? 4 : 6}>
