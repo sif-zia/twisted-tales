@@ -36,9 +36,11 @@ app.use("/", (req, res) => {
     res.send("Welcome to Twisted Tales API");
 });
 
+
+
 // Connect to DB
 mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(process.env.MONGO_URI, {dbName:"Twisted_Tales_DB"})
     .then(() => {
         console.log("Connected to mongodb");
         // listen for requests

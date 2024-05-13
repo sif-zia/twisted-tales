@@ -23,7 +23,6 @@ const UserSchema = new mongoose.Schema({
 
   writtenChapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
 
-  likedChapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }]
 });
 
 const ChapterSchema = new mongoose.Schema({
@@ -43,14 +42,14 @@ const ChapterSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  
+
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
 const NextChapterSchema = new mongoose.Schema({
   source: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' },
   target: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' },
-  
+
 });
 
 const StorySchema = new mongoose.Schema({
@@ -77,15 +76,25 @@ const StorySchema = new mongoose.Schema({
   },
 
   initiator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  
+
   chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
-  
+
   introChapter: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }
+}, { timestamps: true });
+
+const LikedSchema = new mongoose.Schema({
+  likedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  likedChapter: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true },
+  type: {
+    type: String,
+    required: true
+  }
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
 const Chapter = mongoose.model('Chapter', ChapterSchema);
 const NextChapter = mongoose.model('NextChapter', NextChapterSchema);
 const Story = mongoose.model('Story', StorySchema);
+const Liked = mongoose.model('Like', LikedSchema);
 
-module.exports = { User, Chapter, NextChapter, Story };
+module.exports = { User, Chapter, NextChapter, Story, Liked };
