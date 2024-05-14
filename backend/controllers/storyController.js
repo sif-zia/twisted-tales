@@ -74,6 +74,7 @@ const addStory = async (req, res) => {
   }
 };
 
+
 const getStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -88,28 +89,8 @@ const getStory = async (req, res) => {
       return res.status(404).json({ message: "Story not found" });
     }
 
-    // Read the cover image file
-    fs.readFile(story.coverImgURL, (err, data) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-
-      // Prepare form-data response
-      const formData = {
-        title: story.title,
-        desc: story.desc,
-        genre: story.genre,
-        price: story.price,
-        initiator: story.initiator,
-        coverImg: {
-          data: data, // Image data
-          contentType: "image/png", // Assuming it's PNG, change it based on the actual file type
-        },
-      };
-
-      res.set("Content-Type", "multipart/form-data");
-      res.json(formData);
-    });
+    res.status(200).json({story:story});
+    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -223,6 +204,7 @@ const getStoryRoadmap = async (req, res) => {
   }
 };
 
+
 const deleteStory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -230,7 +212,25 @@ const deleteStory = async (req, res) => {
     if (mongoose.Types.ObjectId.isValid(id) === false) {
       return res.status(400).json({ error: "Invalid ID" });
     }
-    const story = await Story.findByIdAndDelete(id);
+
+    const storyToBeDeleted = await Story.findById(id);
+    if(req.user.id != storyToBeDeleted.initiator){
+      return res.status(400).json({ error: "You are not authorized to delete this story" });
+    }
+
+    const chaptersToBeDeleted = await storyToBeDeleted.chapters
+    await Liked.deleteMany({likedChapter: {$in : chaptersToBeDeleted}})
+    await NextChapter.deleteMany({
+      $or: [
+        {target: {$in : chaptersToBeDeleted}}, 
+        {source: {$in : chaptersToBeDeleted}}
+      ]
+    })
+    await User.updateMany({ readChapters: { $in: chaptersToBeDeleted } }, { $pull: { readChapters: { $in: chaptersToBeDeleted } } });
+    await User.updateMany({ writtenChapters: { $in: chaptersToBeDeleted } }, { $pull: { writtenChapters: { $in: chaptersToBeDeleted } } });
+    await Chapter.deleteMany({_id:{$in:chaptersToBeDeleted}})
+    await User.findByIdAndUpdate(storyToBeDeleted.initiator, {$pull: {initiatedStories:id} }) //only logged in user agar initiator hay khud to he can delete story
+    await Story.findByIdAndDelete(id)
 
     res.json({ message: "Story deleted successfully", story: story });
   } catch (error) {
@@ -279,6 +279,7 @@ const addChapter = async (req, res) => {
         content,
         coverImgURL: req.file.path,
         author: req.user.id,
+        story:storyId
       });
 
       await chapter.save();
@@ -330,34 +331,13 @@ const getChapter = async (req, res) => {
       return res.status(404).json({ error: "Chapter not found" });
     }
 
-    fs.readFile(chapter.coverImgURL, (err, data) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
+    res.status(200).json({chapter:chapter});
 
-      // Prepare form-data response
-      const formData = {
-        title: chapter.title,
-        desc: chapter.desc,
-        content: chapter.content,
-        coverImg: {
-          data: data, // Image data
-          contentType: "image/png", // Assuming it's PNG, change it based on the actual file type
-        },
-        author: chapter.author,
-      };
-
-      res.set("Content-Type", "multipart/form-data");
-      res.json(formData);
-    });
-
-    if (!chapter) {
-      return res.status(404).json({ message: "Chapter not found" });
-    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 const deleteChapter = async (req, res) => {
   try {
@@ -382,12 +362,17 @@ const deleteChapter = async (req, res) => {
     }
 
     await NextChapter.deleteMany({ target: chapterId });
+    await Liked.deleteMany({ likedChapter: chapterId });
 
     const deletedChapter = await Chapter.findByIdAndDelete(chapterId);
 
     await User.findByIdAndUpdate(req.user.id, {
       $pull: { writtenChapters: chapterId },
     });
+    await User.findByIdAndUpdate(req.user.id, {
+      $pull: { readChapters: chapterId },
+    });
+   
 
     const story = await Story.findByIdAndUpdate(
       id,
@@ -431,9 +416,13 @@ const addChapterReaction = async (req, res) => {
       return res.status(400).json({ error: "Invalid Reaction Type" });
     }
 
+    const chapter = await Chapter.findById(chapterId)
+    if(!chapter){
+      return res.status(404).json({ error: "Chapter Not Found" });
+    }
     await Liked.create({ likedBy: req.user.id, likedChapter: chapterId, type });
-
     res.json({ message: "Reaction added successfully" });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -475,19 +464,30 @@ const markRead = async (req, res) => {
       _id: req.user.id,
       readChapters: { $in: [chapterId] },
     });
-    if (user) {
-      const updatedUser = await User.findOneAndUpdate(
+    if (user) 
+    {
+      // update readchapters list in users
+      await User.findOneAndUpdate(
         { _id: req.user.id },
         { $pull: { readChapters: chapterId } },
         { new: true }
       );
+
+      // update readBy list in chapter
+      await Chapter.findByIdAndUpdate(chapterId,{$pull:{readBy:req.user.id}})
       return res.status(200).json({ message: "Chapter Marked as Unread" });
-    } else {
-      const updatedUser = await User.findOneAndUpdate(
+    }
+    else 
+    {
+      // update readchapters list in users
+      await User.findOneAndUpdate(
         { _id: req.user.id },
         { $push: { readChapters: chapterId } },
         { new: true }
       );
+
+      // update readBy list in chapter
+      await Chapter.findByIdAndUpdate(chapterId,{$push:{readBy:req.user.id}})
       return res.status(200).json({ message: "Chapter Marked as Read" });
     }
   } catch (error) {

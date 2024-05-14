@@ -8,6 +8,7 @@ const session = require("express-session");
 const userRoutes = require("./routes/userRoutes");
 const storyRoutes = require("./routes/storyRoutes");
 const exploreRoutes = require("./routes/exploreRoutes");
+const getImage = require('./utilities/getImage')
 
 
 // App
@@ -35,6 +36,8 @@ app.use((req, res, next) => {
 app.use("/user", userRoutes);
 app.use("/story", storyRoutes);
 app.use("/explore", exploreRoutes);
+app.use("/getImage", getImage)
+
 app.use("/", (req, res) => {
     res.send("Welcome to Twisted Tales API");
 });

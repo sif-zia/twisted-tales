@@ -44,7 +44,9 @@ const ChapterSchema = new mongoose.Schema({
     required: false
   },
 
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+  story: { type: mongoose.Schema.Types.ObjectId, ref: 'Story' },//new
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]//new
 }, { timestamps: true });
 
 const NextChapterSchema = new mongoose.Schema({
