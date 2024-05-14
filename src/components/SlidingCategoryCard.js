@@ -34,7 +34,7 @@ const SlidingCategoryCard = ({ title, NoOfStories, NoOfReads, imageURL }) => {
                                 </Box>
                                 {/* <Divider orientation="vertical" variant="middle" flexItem sx={{height:"100%"}}/> */}
                                 <Box style={{ paddingLeft: "5px" }}>
-                                    <Typography variant="subtitle1" color="#6b726e">{NoOfReads}k Reads</Typography>
+                                    <Typography variant="subtitle1" color="#6b726e">{NoOfReads} Reads</Typography>
                                 </Box>
                             </Stack>
                         </Grid>

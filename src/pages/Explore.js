@@ -180,7 +180,7 @@ const Explore = () => {
       </Box>
 
       {/*Trending Stories Carousel*/}
-      {trendingStories && <Box sx={{ margin: "0px 15px" }}>
+      {trendingStories ? <Box sx={{ margin: "0px 15px" }}>
         <Carousel
           responsive={StoryResponsive}
           infinite={true}
@@ -197,8 +197,7 @@ const Explore = () => {
             />
           ))}
         </Carousel>
-        {/* <StoriesLoading /> */}
-      </Box>}
+      </Box> : <StoriesLoading />}
 
       {/*Genre Heading*/}
       <Box sx={{ margin: "110px 7vw 25px 7vw" }}>
@@ -222,11 +221,11 @@ const Explore = () => {
         >
           {genres.map((genre) => (
             <SlidingCategoryCard
-              key={genre}
-              title={genre}
-              NoOfStories={CategoryData.NoOfStories}
-              imageURL={`http://localhost:4000/explore/getGenreCover?genre=${genre}`}
-              NoOfReads={CategoryData.NoOfReads}
+              key={genre.genre}
+              title={genre.genre}
+              NoOfStories={genre.count}
+              imageURL={`http://localhost:4000/explore/getGenreCover?genre=${genre.genre}`}
+              NoOfReads={genre.reads}
             />
           ))}
         </Carousel>}
@@ -264,25 +263,25 @@ const Explore = () => {
                   <RecentStoryCard
                     storyName={latestStories[0].title}
                     genre={latestStories[0].genre}
-                    author={latestStories[0].initiator}
+                    author={latestStories[0].initiator.name}
                     imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[0].coverImgURL}`}
                   />
                   <RecentStoryCard
                     storyName={latestStories[1].title}
                     genre={latestStories[1].genre}
-                    author={latestStories[1].initiator}
+                    author={latestStories[1].initiator.name}
                     imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[1].coverImgURL}`}
                   />
                   <RecentStoryCard
                     storyName={latestStories[2].title}
                     genre={latestStories[2].genre}
-                    author={latestStories[2].initiator}
+                    author={latestStories[2].initiator.name}
                     imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[2].coverImgURL}`}
                   />
                   <RecentStoryCard
                     storyName={latestStories[3].title}
                     genre={latestStories[3].genre}
-                    author={latestStories[3].initiator}
+                    author={latestStories[3].initiator.name}
                     imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[3].coverImgURL}`}
                   />
                 </div>

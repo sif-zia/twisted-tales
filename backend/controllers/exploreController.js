@@ -99,7 +99,6 @@ const getGenres = async (req, res) => {
         const distinctGenres = await Story.distinct('genre');
         let genres = [];
 
-
         for (const genre of distinctGenres) {
 
             const stories = await Story.find({ genre: genre }).populate('chapters');
@@ -107,7 +106,6 @@ const getGenres = async (req, res) => {
             let reads = 0
             for (const story of stories) {
                 for (const chapter of story.chapters) {
-                    console.log(chapter)
                     reads += chapter.readBy.length
                 }
             }
@@ -220,7 +218,6 @@ const getBestSeller = async (req, res) => {
         for (const story of mostBoughtStories) {
             let reads = 0
             for (const chapter of story.chapters) {
-                console.log(chapter)
                 reads += chapter.readBy.length
             }
             bestSellers.push({ story: story, reads: reads })
