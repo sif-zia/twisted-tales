@@ -82,7 +82,9 @@ const StorySchema = new mongoose.Schema({
 
   chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
 
-  introChapter: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }
+  introChapter: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' },
+
+  boughtBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, { timestamps: true });
 
 const LikedSchema = new mongoose.Schema({
