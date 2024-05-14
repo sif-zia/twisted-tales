@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import SlidingStoryCard from "../components/SlidingStoryCard";
@@ -13,11 +13,84 @@ import RecentStoryCard from "../components/RecentStoryCard";
 import AuthorOfTheMonth from "../components/AuthorOfTheMonth";
 import { useDispatch } from "react-redux";
 import { setPage } from "../slices/navbarSlice";
+import api from "../api/api";
+import StoriesLoading from "../components/StoriesLoading";
 
 const Explore = () => {
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   dispatch(setPage("explore"));
+
+  const [trendingStories, setTrendingStories] = useState(null);
+  const [genres, setGenres] = useState(null);
+  const [latestStories, setLatestStories] = useState(null);
+  const [writerOfTheMonth, setWriterOfTheMonth] = useState(null);
+
+  useEffect(() => {
+    const getTrendingStories = async () => {
+      try {
+        const response = await api.get("/explore/trendingStories");
+        setTrendingStories(response.data.trendingStories);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getTrendingStories();
+  }, [])
+
+  useEffect(() => {
+    const getGenres = async () => {
+      try {
+        const response = await api.get("/explore/genres");
+        setGenres(response.data.genres);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getGenres();
+  }, [])
+
+  useEffect(() => {
+    const getLatestStories = async () => {
+      try {
+        const response = await api.get("/explore/latestStories");
+        setLatestStories(response.data.latestStories);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getLatestStories();
+  }, [])
+
+  useEffect(() => {
+    const getWriterOfTheMonth = async () => {
+      try {
+        const response = await api.get("/explore/writerOfTheMonth");
+        setWriterOfTheMonth(response.data.writerOfTheMonth);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getWriterOfTheMonth();
+  }, [])
+
+  useEffect(() => {
+    const getTopPicks = async () => {
+      try {
+        const response = await api.get("/explore/topPicks");
+        console.log(response.data.topPicks);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getTopPicks();
+  }, [])
+
   const StoryResponsive = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
@@ -58,15 +131,6 @@ const Explore = () => {
     },
   };
 
-  const data = {
-    title: "Raspberry Waffle",
-    description:
-      " Waffle is yummy and i luv it and Tahira sometimes eats it but Zainab likes it too but the one time we ordered, she ditched me cz her mama came to pick her up huh. Anyways, Afroze is my taste bud hehe ",
-    imageURL:
-      "https://www.julieseatsandtreats.com/wp-content/uploads/2018/01/Easy-Homemade-Waffles.jpg",
-    initiator: "Hamnanana",
-  };
-
   const CategoryData = {
     title: "Suspense",
     NoOfStories: 900,
@@ -104,14 +168,6 @@ const Explore = () => {
     },
   ];
 
-  const RecentStoryData = {
-    storyName: "The first Muslim",
-    genre: "History",
-    author: "Lesly Hezlton",
-    imageURL:
-      "https://book-shelf.pk/cdn/shop/files/TheFirstMuslim-Bookshelf.pkPakistan.jpg?v=1700908297",
-  };
-
   return (
     <div>
       {/*Trending Heading*/}
@@ -124,7 +180,7 @@ const Explore = () => {
       </Box>
 
       {/*Trending Stories Carousel*/}
-      <Box sx={{ margin: "0px 15px" }}>
+      {trendingStories && <Box sx={{ margin: "0px 15px" }}>
         <Carousel
           responsive={StoryResponsive}
           infinite={true}
@@ -132,62 +188,17 @@ const Explore = () => {
           autoPlaySpeed={3500}
           removeArrowOnDeviceType={["mobile"]}
         >
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
-          <SlidingStoryCard
-            title={data.title}
-            description={data.description}
-            imageURL={data.imageURL}
-            initiator={data.initiator}
-          />
+          {trendingStories.map((trendingStory) => (
+            <SlidingStoryCard
+              title={trendingStory.story.title}
+              description={trendingStory.story.desc}
+              imageURL={`http://localhost:4000/getImage?imagePath=${trendingStory.story.coverImgURL}`}
+              initiator={trendingStory.story.initiator}
+            />
+          ))}
         </Carousel>
-      </Box>
+        {/* <StoriesLoading /> */}
+      </Box>}
 
       {/*Genre Heading*/}
       <Box sx={{ margin: "110px 7vw 25px 7vw" }}>
@@ -202,48 +213,23 @@ const Explore = () => {
 
       {/*Genre Stories Carousel*/}
       <Box sx={{ margin: "0 6.5vw" }}>
-        <Carousel
+        {genres && <Carousel
           responsive={CategoryResponsive}
           infinite={true}
           customButtonGroup={<ButtonGroup />}
           renderButtonGroupOutside={true}
           removeArrowOnDeviceType={["superLargeDesktop", "mobile"]}
         >
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
-
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
-
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
-
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
-
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
-        </Carousel>
+          {genres.map((genre) => (
+            <SlidingCategoryCard
+              key={genre}
+              title={genre}
+              NoOfStories={CategoryData.NoOfStories}
+              imageURL={`http://localhost:4000/explore/getGenreCover?genre=${genre}`}
+              NoOfReads={CategoryData.NoOfReads}
+            />
+          ))}
+        </Carousel>}
       </Box>
 
       <BestSellers stories={BestSellersData} />
@@ -273,32 +259,34 @@ const Explore = () => {
           </div>
           <div className="row justify-content-center g-lg-4 gy-5">
             <div className="col-lg-8">
-              <div className="row justify-content-center gy-4">
-                <RecentStoryCard
-                  storyName={RecentStoryData.storyName}
-                  genre={RecentStoryData.genre}
-                  author={RecentStoryData.author}
-                  imageURL={RecentStoryData.imageURL}
-                />
-                <RecentStoryCard
-                  storyName={RecentStoryData.storyName}
-                  genre={RecentStoryData.genre}
-                  author={RecentStoryData.author}
-                  imageURL={RecentStoryData.imageURL}
-                />
-                <RecentStoryCard
-                  storyName={RecentStoryData.storyName}
-                  genre={RecentStoryData.genre}
-                  author={RecentStoryData.author}
-                  imageURL={RecentStoryData.imageURL}
-                />
-                <RecentStoryCard
-                  storyName={RecentStoryData.storyName}
-                  genre={RecentStoryData.genre}
-                  author={RecentStoryData.author}
-                  imageURL={RecentStoryData.imageURL}
-                />
-              </div>
+              {latestStories &&
+                <div className="row justify-content-center gy-4">
+                  <RecentStoryCard
+                    storyName={latestStories[0].title}
+                    genre={latestStories[0].genre}
+                    author={latestStories[0].initiator}
+                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[0].coverImgURL}`}
+                  />
+                  <RecentStoryCard
+                    storyName={latestStories[1].title}
+                    genre={latestStories[1].genre}
+                    author={latestStories[1].initiator}
+                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[1].coverImgURL}`}
+                  />
+                  <RecentStoryCard
+                    storyName={latestStories[2].title}
+                    genre={latestStories[2].genre}
+                    author={latestStories[2].initiator}
+                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[2].coverImgURL}`}
+                  />
+                  <RecentStoryCard
+                    storyName={latestStories[3].title}
+                    genre={latestStories[3].genre}
+                    author={latestStories[3].initiator}
+                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[3].coverImgURL}`}
+                  />
+                </div>
+              }
             </div>
             <Stack className="col-lg-4" direction="column" justifyContent="center" bgcolor="#FAF9F6">
               <Stack className="section-title-2 two mb-30" direction="row" justifyContent="center">
@@ -306,7 +294,7 @@ const Explore = () => {
                 <div className="dash"></div>
               </Stack>
               <div className="another-post-area mb-50">
-                <AuthorOfTheMonth />
+                {writerOfTheMonth && <AuthorOfTheMonth writerOfTheMonth={writerOfTheMonth}/>}
               </div>
             </Stack>
           </div>

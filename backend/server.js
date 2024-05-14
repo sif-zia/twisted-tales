@@ -8,14 +8,18 @@ const session = require("express-session");
 const userRoutes = require("./routes/userRoutes");
 const storyRoutes = require("./routes/storyRoutes");
 const exploreRoutes = require("./routes/exploreRoutes");
-const getImage = require('./utilities/getImage')
-
+const getImage = require("./utilities/getImage");
 
 // App
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -36,17 +40,15 @@ app.use((req, res, next) => {
 app.use("/user", userRoutes);
 app.use("/story", storyRoutes);
 app.use("/explore", exploreRoutes);
-app.use("/getImage", getImage)
+app.use("/getImage", getImage);
 
 app.use("/", (req, res) => {
     res.send("Welcome to Twisted Tales API");
 });
 
-
-
 // Connect to DB
 mongoose
-    .connect(process.env.MONGO_URI, {dbName:"Twisted_Tales_DB"})
+    .connect(process.env.MONGO_URI, { dbName: "Twisted_Tales_DB" })
     .then(() => {
         console.log("Connected to mongodb");
         // listen for requests

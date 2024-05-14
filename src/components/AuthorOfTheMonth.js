@@ -1,6 +1,6 @@
 import React from "react";
 
-const AuthorOfTheMonth = () => {
+const AuthorOfTheMonth = ({writerOfTheMonth}) => {
   return (
     <div class="swiper-slide">
       <div class="author-2">
@@ -35,9 +35,10 @@ const AuthorOfTheMonth = () => {
         </div>
         <div class="info">
           <h4>
-            <a href="author-details.html">Dawson Tristan</a>
+            <a href="author-details.html">{writerOfTheMonth.name}</a>
           </h4>
-          <span>800 Article</span>
+          <span>{writerOfTheMonth.initiatedStories.length} {writerOfTheMonth.initiatedStories.length >= 2 ? "Stories" : "Story"}</span>
+          <span>{writerOfTheMonth.writtenChapters.length} {writerOfTheMonth.writtenChapters.length >= 2 ? "Chapters" : "Chapter"}</span>
         </div>
       </div>
     </div>

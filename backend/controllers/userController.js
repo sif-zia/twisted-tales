@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
     if (!user) {
         return res
             .status(400)
-            .json({ message: "Invalid email" });
+            .json({ error: "Invalid Email or Password" });
     }
 
     // Compare password
@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
         if (err || !result) {
             return res
                 .status(400)
-                .json({ message: "Invalid password" });
+                .json({ error: "Invalid Email or Password" });
         }
 
         // Create JWT token
@@ -77,7 +77,7 @@ const loginUser = async (req, res) => {
 
         // Set cookie with JWT token
         res.cookie("token", token, { httpOnly: true });
-        res.json({ message: "Login successful" });
+        res.json({ message: "Login successful", user: user});
     });
 };
 
@@ -86,4 +86,14 @@ const logoutUser = async (req, res) => {
     res.json({ message: `${req.user.name} Logout successful` });
 };
 
-module.exports = { addUser, getUser, loginUser, logoutUser };
+const getCrrUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        res.json({ user });
+    }
+    catch (error) {
+        res.status(500).json({ error: error });
+    }
+}
+
+module.exports = { addUser, getUser, loginUser, logoutUser, getCrrUser };

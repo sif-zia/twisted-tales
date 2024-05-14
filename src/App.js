@@ -1,4 +1,3 @@
-import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -18,44 +17,45 @@ import Search from "./pages/Search";
 import AddChapter from "./pages/AddChapter";
 import AddStory from "./pages/AddStory";
 import UserDetails from "./pages/UserDetails";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
-  useEffect(() => {
-    // Array of JavaScript file paths
-    const jsFiles = [
-      "assets/js/jquery-3.6.0.min.js",
-      "assets/js/jquery-ui.js",
-      "assets/js/bootstrap.bundle.min.js",
-      "assets/js/swiper-bundle.min.js",
-      "assets/js/jquery.fancybox.min.js",
-      "assets/js/gsap.min.js",
-      "assets/js/TweenMax.min.js",
-      "assets/js/jquery.fancybox.min.js",
-      "assets/js/slick.js",
-      "assets/js/jquery.marquee.min.js",
-      "assets/js/jquery.nice-select.js",
-      "assets/js/jquery.counterup.min.js",
-      "assets/js/main.js",
-    ]; // Add your file paths here
+  // useEffect(() => {
+  //   // Array of JavaScript file paths
+  //   const jsFiles = [
+  //     "assets/js/jquery-3.6.0.min.js",
+  //     "assets/js/jquery-ui.js",
+  //     "assets/js/bootstrap.bundle.min.js",
+  //     "assets/js/swiper-bundle.min.js",
+  //     "assets/js/jquery.fancybox.min.js",
+  //     "assets/js/gsap.min.js",
+  //     "assets/js/TweenMax.min.js",
+  //     "assets/js/jquery.fancybox.min.js",
+  //     "assets/js/slick.js",
+  //     "assets/js/jquery.marquee.min.js",
+  //     "assets/js/jquery.nice-select.js",
+  //     "assets/js/jquery.counterup.min.js",
+  //     "assets/js/main.js",
+  //   ]; // Add your file paths here
 
-    // Load each JavaScript file
-    jsFiles.forEach((filePath) => {
-      const script = document.createElement("script");
-      script.src = filePath;
-      script.async = true;
-      document.body.appendChild(script);
-    });
+  //   // Load each JavaScript file
+  //   jsFiles.forEach((filePath) => {
+  //     const script = document.createElement("script");
+  //     script.src = filePath;
+  //     script.async = true;
+  //     document.body.appendChild(script);
+  //   });
 
-    // Cleanup function
-    return () => {
-      jsFiles.forEach((filePath) => {
-        const script = document.querySelector(`script[src="${filePath}"]`);
-        if (script) {
-          document.body.removeChild(script);
-        }
-      });
-    };
-  }, []);
+  //   // Cleanup function
+  //   return () => {
+  //     jsFiles.forEach((filePath) => {
+  //       const script = document.querySelector(`script[src="${filePath}"]`);
+  //       if (script) {
+  //         document.body.removeChild(script);
+  //       }
+  //     });
+  //   };
+  // }, []);
 
   const theme = createTheme({
     typography: {
@@ -102,17 +102,17 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route exact path="/" element={<Explore />} />
-          <Route path="Chapter" element={<Chapter />} />
-          <Route path="Search" element={<Search />} />
-          <Route path="AddStory" element={<AddStory />} />
-          <Route path="AddChapter" element={<AddChapter />} />
-          <Route path="UserDetails" element={<UserDetails />} />
+          <Route path="chapter" element={<Chapter />} />
+          <Route path="search" element={<Search />} />
+          <Route path="addStory" element={<AddStory />} />
+          <Route path="addChapter" element={<AddChapter />} />
+          <Route path="userDetails" element={<UserDetails />} />
 
         </Route>
-        <Route path="/Login" element={<VisitorLayout />}>
+        <Route path="/login" element={<VisitorLayout />}>
           <Route index element={<Login />} />
         </Route>
-        <Route path="/Register" element={<VisitorLayout />}>
+        <Route path="/register" element={<VisitorLayout />}>
           <Route index element={<Register />} />
         </Route>
       </Routes>

@@ -10,7 +10,6 @@ import { motion } from "framer-motion"
 
 const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
     
-
     return ( 
         <motion.div whileHover={{ scale: 1.1}} style={{padding:"25px 0px", margin:"0px 12px"}}>
         <Paper elevation={3} 
@@ -32,10 +31,10 @@ const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-           {title}
+           {title.length > 30 ? title.substring(0, 30) + "..." : title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {description}
+            {description.length > 50 ? description.substring(0, 50) + "..." : description}
            </Typography>
         </CardContent>
         <CardActions>
