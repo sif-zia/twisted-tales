@@ -211,8 +211,8 @@ const Explore = () => {
       </Box>
 
       {/*Genre Stories Carousel*/}
-      <Box sx={{ margin: "0 6.5vw" }}>
-        {genres && <Carousel
+      {genres ? <Box sx={{ margin: "0 6.5vw" }}>
+         <Carousel
           responsive={CategoryResponsive}
           infinite={true}
           customButtonGroup={<ButtonGroup />}
@@ -228,8 +228,8 @@ const Explore = () => {
               NoOfReads={genre.reads}
             />
           ))}
-        </Carousel>}
-      </Box>
+        </Carousel>
+      </Box> : <StoriesLoading />}
 
       <BestSellers stories={BestSellersData} />
 
