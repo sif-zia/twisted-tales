@@ -4,101 +4,106 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const addUser = async (req, res) => {
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-    try {
-        const oldUser = await User.findOne({ email: email });
+  try {
+    const oldUser = await User.findOne({ email: email });
 
-        if (oldUser) {
-            return res.status(400).json({ error: "User already exists" });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const user = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-        });
-
-        res.json({ message: "User created", user });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: error });
+    if (oldUser) {
+      return res.status(400).json({ error: "User already exists" });
     }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    res.json({ message: "User created", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error });
+  }
 };
 
 const getUser = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        if (mongoose.Types.ObjectId.isValid(id) === false) {
-            return res.status(400).json({ error: "Invalid ID" });
-        }
-
-        const user = await User.findById(id);
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        let likes = await Liked.countDocuments({ likedChapter: { $in: user.writtenChapters }, type: "like" })
-        console.log(likes)
-        likes = likes === null ? 0 : likes
-
-        res.status(200).json({user, likes });
-    } catch (error) {
-        res.status(500).json({ error: error });
+  try {
+    if (mongoose.Types.ObjectId.isValid(id) === false) {
+      return res.status(400).json({ error: "Invalid ID" });
     }
+
+    const user = await User.findById(id)
+      .populate({
+        path: "writtenChapters",
+        populate: {
+          path: "story",
+          model: "Story",
+        },
+      })
+      .populate("initiatedStories");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    let likes = await Liked.countDocuments({
+      likedChapter: { $in: user.writtenChapters },
+      type: "like",
+    });
+    console.log(likes);
+    likes = likes === null ? 0 : likes;
+
+    res.status(200).json({ user, likes });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
 
-
 const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    // Find user by username
-    const user = await User.findOne({ email: email });
-    if (!user) {
-        return res
-            .status(400)
-            .json({ error: "Invalid Email or Password" });
+  // Find user by username
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return res.status(400).json({ error: "Invalid Email or Password" });
+  }
+
+  // Compare password
+  bcrypt.compare(password, user.password, (err, result) => {
+    if (err || !result) {
+      return res.status(400).json({ error: "Invalid Email or Password" });
     }
 
-    // Compare password
-    bcrypt.compare(password, user.password, (err, result) => {
-        if (err || !result) {
-            return res
-                .status(400)
-                .json({ error: "Invalid Email or Password" });
-        }
+    // Create JWT token
+    const token = jwt.sign(
+      { id: user._id, name: user.name, email: user.email },
+      process.env.secretKey,
+      { expiresIn: "12h" }
+    );
 
-        // Create JWT token
-        const token = jwt.sign(
-            { id: user._id, name: user.name, email: user.email },
-            process.env.secretKey,
-            { expiresIn: "12h" }
-        );
-
-        // Set cookie with JWT token
-        res.cookie("token", token, { httpOnly: true });
-        res.json({ message: "Login successful", user: user });
-    });
+    // Set cookie with JWT token
+    res.cookie("token", token, { httpOnly: true });
+    res.json({ message: "Login successful", user: user });
+  });
 };
 
 const logoutUser = async (req, res) => {
-    res.clearCookie("token");
-    res.json({ message: `${req.user.name} Logout successful` });
+  res.clearCookie("token");
+  res.json({ message: `${req.user.name} Logout successful` });
 };
 
 const getCrrUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        res.json({ user });
-    }
-    catch (error) {
-        res.status(500).json({ error: error });
-    }
-}
+  try {
+    const user = await User.findById(req.user.id);
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
 
 module.exports = { addUser, getUser, loginUser, logoutUser, getCrrUser };

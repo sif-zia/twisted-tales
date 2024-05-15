@@ -103,10 +103,10 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route exact path="/" element={<Explore />} />
           <Route path="/story/:storyId/chapter/:chapterId" element={<PrivateRoute><Chapter /></PrivateRoute>} />
-          <Route path="search" element={<Search />} />
+          <Route path="search" element={<PrivateRoute><Search /></PrivateRoute>} />
           <Route path="addStory" element={<PrivateRoute><AddStory /></PrivateRoute>} />
           <Route path="addChapter" element={<AddChapter />} />
-          <Route path="userDetails" element={<UserDetails />} />
+          <Route path="userDetails/:userId" element={<PrivateRoute><UserDetails /></PrivateRoute>} />
 
         </Route>
         <Route path="/login" element={<VisitorLayout />}>

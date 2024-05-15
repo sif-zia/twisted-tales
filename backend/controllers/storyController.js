@@ -103,7 +103,7 @@ const searchStory = async (req, res) => {
     const stories = await Story.aggregate([
       {
         $lookup: {
-          from: "users", // Assuming the users collection name is 'users'
+          from: "users", 
           localField: "initiator",
           foreignField: "_id",
           as: "initiator",
@@ -124,7 +124,7 @@ const searchStory = async (req, res) => {
       },
     ]);
 
-    res.json({ message: "Stories retrieved successfully", stories });
+    res.json({ stories });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -137,7 +137,7 @@ const searchChapter = async (req, res) => {
     const chapters = await Chapter.aggregate([
       {
         $lookup: {
-          from: "users", // Assuming the users collection name is 'users'
+          from: "users", 
           localField: "author",
           foreignField: "_id",
           as: "author",
@@ -156,16 +156,29 @@ const searchChapter = async (req, res) => {
           ],
         },
       },
-    ]);
+    ])
+    await Chapter.populate(chapters, { path: 'story' });
 
-    res.json({
-      message: "Chapters retrieved successfully",
-      chapters: chapters,
-    });
+    res.json({ chapters: chapters});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+const getAuthors = async(req, res) =>{
+  try{
+    const authors = await User.find({ writtenChapters: { $exists: true, $not: { $size: 0 } } });
+
+    res.status(200).json({authors: authors.map(author=>author.name)})
+  }
+  catch(error)
+  {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 
 const getStoryRoadmap = async (req, res) => {
   try {
@@ -531,5 +544,6 @@ module.exports = {
   addChapterReaction,
   removeReaction,
   markRead,
-  getReaction
+  getReaction, 
+  getAuthors
 };

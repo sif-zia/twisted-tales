@@ -3,106 +3,159 @@ import { Stack } from "@mui/system";
 import SearchItem from "../components/SearchItem";
 import { useDispatch } from "react-redux";
 import { setPage } from "../slices/navbarSlice";
+import { useParams } from "react-router-dom";
+import api from "../api/api";
+import { useEffect, useState } from "react";
 
 const UserDetails = () => {
-    const isDesktop = useMediaQuery('(min-width: 1500px)');
+  const { userId } = useParams();
+  const [author, setAuthor] = useState(null);
 
-    const searchResultData = {
-        storyName: "Meri Kahani",
-        date: "20 January",
-        initiatorName: "Hamnana",
-        genre: "Comedy"
-    }
+  useEffect(() => {
+    const sendAuthorRequest = async () => {
+      try {
+        const responseAuthor = await api.get(`user/${userId}`);
+        const user = responseAuthor.data;
+        setAuthor(user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-    const dispatch = useDispatch();
-    dispatch(setPage("user details"));
+    sendAuthorRequest();
+  }, []);
 
-    return (
+  const isDesktop = useMediaQuery("(min-width: 1500px)");
 
-        <div className="tt-magic-cursor">
+  const searchResultData = {
+    storyName: "Meri Kahani",
+    date: "20 January",
+    initiatorName: "Hamnana",
+    genre: "Comedy",
+  };
 
+  const dispatch = useDispatch();
+  dispatch(setPage("user details"));
 
+  return (
+    <div className="tt-magic-cursor">
+      <div className="breadcrumb-section">
+        <div className="container">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                <a href="index-2.html">Home</a>
+              </li>
+              <li className="breadcrumb-item active" aria-current="page">
+                Author Details
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
 
-            <div className="breadcrumb-section">
-                <div className="container">
-                    <nav aria-label="breadcrumb">
-                        <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="index-2.html">Home</a></li>
-                            <li className="breadcrumb-item active" aria-current="page">Author Details</li>
-                        </ol>
-                    </nav>
+      <section className="author-section pt-50 pb-100">
+        <div className="container">
+          <div className="row gy-2">
+            <div className="col-lg-12">
+              <div className="author-details">
+                <img
+                  className="image"
+                  src={`${process.env.PUBLIC_URL}/assets/images/authors/author-details-img.jpg`}
+                  alt="image"
+                />
+                <div className="author-info">
+                  <h2>{author?.user.name}</h2>
+                  <p>{author?.user.email}</p>
+
+                  <ul style={{ listStyleType: "none", padding: 0, margin: 0 , display:"flex", direction:"row" , width:"50vw" ,justifyContent:"space-between"}} >
+                    <li>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/icons/total-post.svg`}
+                        alt="image"
+                      />
+                        {" "}Initiated Plots:{" "}
+                      <b style={{color:"black"}}>{author?.user.initiatedStories.length}</b>
+                    </li>
+                    <li>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/icons/view.svg`}
+                        alt="image"
+                      />
+                       {" "}Composed Chapters:{" "}
+                      <b style={{color:"black"}}>{author?.user.writtenChapters.length}</b>
+                    </li>
+                    <li>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/icons/like.svg`}
+                        alt="image"
+                      />
+                        {" "}Likes: <b style={{color:"black"}}>{author?.likes}</b>
+                    </li>
+                  </ul>
+                 
                 </div>
+              </div>
             </div>
 
-
-            <section className="author-section pt-50 pb-100">
-                <div className="container">
-                    <div className="row gy-2">
-                        <div className="col-lg-12">
-                            <div className="author-details">
-                                <img className="image" src="assets/images/authors/author-details-img.jpg" alt="image" />
-                                <div className="author-info">
-                                    <h2>Hamna Chinkiari</h2>
-                                    <ul className="category">
-                                        <li><a href="blog-classic.html">Creative,</a></li>
-                                        <li><a href="blog-classic.html">Lifestyle,</a></li>
-                                        <li><a href="blog-classic.html">Fashion</a></li>
-                                    </ul>
-                                    <p>Morbi quis elementum ex, id commodo odio. In maximus, augue euquami vestibulum gomat dictum, lorem nibh faucibus quam.</p>
-                                    <ul className="meta-list">
-                                        <li><img src="assets/images/icons/total-post.svg" alt="image" />Total Post: <span>209</span></li>
-                                        <li><img src="assets/images/icons/view.svg" alt="image" />Total View: <span>25199</span></li>
-                                        <li><img src="assets/images/icons/like.svg" alt="image" />Like: <span>11957</span></li>
-                                    </ul>
-                                    <Stack direction="row" flexWrap={true} justifyContent="space-evenly" sx={{ mt: 7 }}>
-                                        <Button variant="outlined" sx={{ borderRadius: "50px", textTransform: "none" }}><i class="fab fa-facebook" style={{ fontSize: "16px", marginRight: "4px" }}></i>Facebook</Button>
-                                        <Button variant="outlined" sx={{ borderRadius: "50px", textTransform: "none" }}><i class="bx bxl-twitter" style={{ fontSize: "16px", marginRight: "4px" }}></i>Twitter</Button>
-                                        <Button variant="outlined" sx={{ borderRadius: "50px", textTransform: "none" }}><i class="bx bxl-instagram-alt" style={{ fontSize: "18px", marginRight: "4px" }}></i>Instagram</Button>
-                                    </Stack>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div className="col-lg-12">
-                            <Grid container direction={isDesktop ? 'row' : 'column'} spacing={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-                                <Grid item xs={6}>
-                                    <Typography variant="h1" align="center" sx={{my:"25px"}}>
-                                        Initiated Plots
-                                    </Typography>
-                                    <Stack direction="column" spacing={2}>
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-
-                                    </Stack>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography variant="h1" align="center" sx={{my:"25px"}}>
-                                        Composed Chapters
-                                    </Typography>
-                                    <Stack direction="column" spacing={2}>
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-                                        <SearchItem storyName={searchResultData.storyName} date={searchResultData.date} initiatorName={searchResultData.initiatorName} genre={searchResultData.genre} />
-
-                                    </Stack>
-                                </Grid>
-
-                            </Grid>
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <div className="col-lg-12">
+              <Stack
+                direction="row"
+                justifyContent={"space-evenly"}
+              >   
+              </Stack>
+              <Grid
+                container
+                direction={isDesktop ? "row" : "column"}
+                spacing={2}
+                display={"flex"}
+                justifyContent={"start"}
+                alignItems={isDesktop? "start" : "center"}
+              >
+                <Grid item xs={6}>
+                    
+                <Typography variant="h1" align="center"  sx={{ my: "25px" }}>
+                  Initiated Plots
+                </Typography>
+                  <Stack direction="column" spacing={2}>
+                    {author?.user.initiatedStories.map((story) => (
+                      <SearchItem
+                        storyName={story.title}
+                        date={story.createdAt}
+                        genre={story.genre}
+                        coverImgURL={story.coverImgURL}
+                        isStory={true}
+                        storyId = {story._id}
+                        chapterId = {" "}
+                      />
+                    ))}
+                  </Stack>
+                </Grid>
+                <Grid item xs={6}>
+                <Typography variant="h1" align="center"  sx={{ my: "25px" }}>
+                  Composed Chapters
+                </Typography>
+                  <Stack direction="column" spacing={2}>
+                    {author?.user.writtenChapters.map((chapter) => (
+                      <SearchItem
+                        storyName={chapter.title}
+                        date={chapter.createdAt}
+                        genre={chapter.story.genre}
+                        coverImgURL={chapter.coverImgURL}
+                        isStory={false}
+                        storyId = {chapter.story._id}
+                        chapterId = {chapter._id}
+                      />
+                    ))}
+                  </Stack>
+                </Grid>
+              </Grid>
+            </div>
+          </div>
         </div>
-
-    );
-}
+      </section>
+    </div>
+  );
+};
 
 export default UserDetails;

@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { addStory, getStory, searchStory, getStoryRoadmap, deleteStory, addChapter, getChapter, deleteChapter, searchChapter, addChapterReaction, removeReaction, markRead, getReaction } = require("../controllers/storyController");
+const { addStory, getStory, searchStory, getStoryRoadmap, deleteStory, addChapter, getChapter, deleteChapter, searchChapter, addChapterReaction, removeReaction, markRead, getReaction, getAuthors } = require("../controllers/storyController");
 const verifyToken = require("../middlewares/verifyToken");
 
 const router = express.Router();
@@ -15,9 +15,11 @@ router.post("/:id/chapter", verifyToken, addChapter);
 router.get("/:id/roadmap", verifyToken, getStoryRoadmap);
 router.get("/search/chapter", verifyToken, searchChapter);
 router.get("/search", verifyToken, searchStory);
+router.get("/authors", verifyToken, getAuthors);
 router.get("/:id", verifyToken, getStory);
 router.delete("/:id", verifyToken, deleteStory);
 router.post("/", verifyToken, addStory);
+
 
 
 

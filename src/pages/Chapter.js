@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SignpostIcon from "@mui/icons-material/Signpost";
 import { Stack } from "@mui/system";
@@ -18,7 +18,11 @@ import { getCrrUser } from "../slices/userSlice"
 import { useMediaQuery } from '@mui/material';
 
 
+
+
+
 const Chapter = () => {
+
   // useEffect(() => {
   //   // Array of JavaScript file paths
   //   const jsFiles = [
@@ -201,7 +205,7 @@ const Chapter = () => {
                     <div className="author-sidebar-content">
                       <div className="author-title">
                         <h5>
-                          <a href="author-details.html">{chapter?.author.name}</a>
+                          <a onClick={()=>  window.location.href = `http://localhost:3000/userDetails/${chapter?.author._id}`}>{chapter?.author.name}</a>
                         </h5>
                         <span>Creative</span>
                       </div>
