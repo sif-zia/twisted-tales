@@ -38,7 +38,7 @@ function checkFileType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb("Error: Images only!");
+    cb("Upload JPG and PNG Images only!");
   }
 }
 
@@ -89,8 +89,8 @@ const getStory = async (req, res) => {
       return res.status(404).json({ message: "Story not found" });
     }
 
-    res.status(200).json({story:story});
-    
+    res.status(200).json({ story: story });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -214,22 +214,22 @@ const deleteStory = async (req, res) => {
     }
 
     const storyToBeDeleted = await Story.findById(id);
-    if(req.user.id != storyToBeDeleted.initiator){
+    if (req.user.id != storyToBeDeleted.initiator) {
       return res.status(400).json({ error: "You are not authorized to delete this story" });
     }
 
     const chaptersToBeDeleted = await storyToBeDeleted.chapters
-    await Liked.deleteMany({likedChapter: {$in : chaptersToBeDeleted}})
+    await Liked.deleteMany({ likedChapter: { $in: chaptersToBeDeleted } })
     await NextChapter.deleteMany({
       $or: [
-        {target: {$in : chaptersToBeDeleted}}, 
-        {source: {$in : chaptersToBeDeleted}}
+        { target: { $in: chaptersToBeDeleted } },
+        { source: { $in: chaptersToBeDeleted } }
       ]
     })
     await User.updateMany({ readChapters: { $in: chaptersToBeDeleted } }, { $pull: { readChapters: { $in: chaptersToBeDeleted } } });
     await User.updateMany({ writtenChapters: { $in: chaptersToBeDeleted } }, { $pull: { writtenChapters: { $in: chaptersToBeDeleted } } });
-    await Chapter.deleteMany({_id:{$in:chaptersToBeDeleted}})
-    await User.findByIdAndUpdate(storyToBeDeleted.initiator, {$pull: {initiatedStories:id} }) //only logged in user agar initiator hay khud to he can delete story
+    await Chapter.deleteMany({ _id: { $in: chaptersToBeDeleted } })
+    await User.findByIdAndUpdate(storyToBeDeleted.initiator, { $pull: { initiatedStories: id } }) //only logged in user agar initiator hay khud to he can delete story
     await Story.findByIdAndDelete(id)
 
     res.json({ message: "Story deleted successfully", story: story });
@@ -260,7 +260,7 @@ const addChapter = async (req, res) => {
   try {
     uploadChapterCover(req, res, async function (err) {
       if (err) {
-        return res.status(400).json({ error: err });
+        return res.status(400).json({ error: err.message });
       }
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
@@ -279,7 +279,7 @@ const addChapter = async (req, res) => {
         content,
         coverImgURL: req.file.path,
         author: req.user.id,
-        story:storyId
+        story: storyId
       });
 
       await chapter.save();
@@ -325,13 +325,13 @@ const getChapter = async (req, res) => {
       return res.status(400).json({ error: "Invalid Chapter ID" });
     }
 
-    const chapter = await Chapter.findById(chapterId).populate("author");
+    const chapter = await Chapter.findById(chapterId).populate("author story");
 
     if (!chapter) {
       return res.status(404).json({ error: "Chapter not found" });
     }
 
-    res.status(200).json({chapter:chapter});
+    res.status(200).json({ chapter: chapter });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -372,7 +372,7 @@ const deleteChapter = async (req, res) => {
     await User.findByIdAndUpdate(req.user.id, {
       $pull: { readChapters: chapterId },
     });
-   
+
 
     const story = await Story.findByIdAndUpdate(
       id,
@@ -390,7 +390,7 @@ const deleteChapter = async (req, res) => {
       chapter: deletedChapter,
     });
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -417,7 +417,7 @@ const addChapterReaction = async (req, res) => {
     }
 
     const chapter = await Chapter.findById(chapterId)
-    if(!chapter){
+    if (!chapter) {
       return res.status(404).json({ error: "Chapter Not Found" });
     }
     await Liked.create({ likedBy: req.user.id, likedChapter: chapterId, type });
@@ -464,8 +464,7 @@ const markRead = async (req, res) => {
       _id: req.user.id,
       readChapters: { $in: [chapterId] },
     });
-    if (user) 
-    {
+    if (user) {
       // update readchapters list in users
       await User.findOneAndUpdate(
         { _id: req.user.id },
@@ -474,11 +473,10 @@ const markRead = async (req, res) => {
       );
 
       // update readBy list in chapter
-      await Chapter.findByIdAndUpdate(chapterId,{$pull:{readBy:req.user.id}})
+      await Chapter.findByIdAndUpdate(chapterId, { $pull: { readBy: req.user.id } })
       return res.status(200).json({ message: "Chapter Marked as Unread" });
     }
-    else 
-    {
+    else {
       // update readchapters list in users
       await User.findOneAndUpdate(
         { _id: req.user.id },
@@ -487,13 +485,38 @@ const markRead = async (req, res) => {
       );
 
       // update readBy list in chapter
-      await Chapter.findByIdAndUpdate(chapterId,{$push:{readBy:req.user.id}})
+      await Chapter.findByIdAndUpdate(chapterId, { $push: { readBy: req.user.id } })
       return res.status(200).json({ message: "Chapter Marked as Read" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+const getReaction = async (req, res) => {
+  try {
+    const { chapterId } = req.params;
+    const { type } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(chapterId)) {
+      return res.status(400).json({ error: "Invalid Chapter ID" });
+    }
+
+    const existingReaction = await Liked.findOne({
+      likedBy: req.user.id,
+      likedChapter: chapterId,
+    });
+
+    if (!existingReaction) {
+      return res.status(404).json({ error: "Reaction not Found" });
+    }
+    res.status(200).json({ type: existingReaction.type });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 
 module.exports = {
   addStory,
@@ -507,5 +530,6 @@ module.exports = {
   searchChapter,
   addChapterReaction,
   removeReaction,
-  markRead
+  markRead,
+  getReaction
 };

@@ -1,41 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {
-    fetchCurrentUser,
-    getLoginStatus,
-    getUserStatus,
-    getUserError,
-} from "../slices/userSlice";
+import { getLoginStatus, loginUser } from "../slices/userSlice";
+import api from "../api/api"
+import Skeleton from "@mui/material/Skeleton"
 
 const PrivateRoute = ({ children }) => {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(getLoginStatus);
-    const userStatus = useSelector(getUserStatus);
-    const userError = useSelector(getUserError);
-
+    const [user, setUser] = useState(null)
     useEffect(() => {
-        if (userStatus === 'idle') {
-            dispatch(fetchCurrentUser());
+
+        const sendLoginRequest = async () => {
+            try {
+                const response = await api.get("/user/crr")
+                const crrUser = response.data.user
+                setUser(crrUser)
+            }
+            catch (err) {
+                console.log(err)
+                setUser("Not Found")
+            }
         }
-    }, [userStatus, dispatch]);
 
-    if (userStatus === 'loading') {
-        console.log("Loading...");
-        return <p>Loading...</p>;
+        sendLoginRequest()
+    }, [])
+
+    if (user != null && user === "Not Found") {
+        return <Navigate to="/login" />
     }
-
-    if (userStatus === 'failed') {
-        console.log("Error: ", userError);
-        return <p>Error: {userError}</p>;
+    if (user != null) {
+        dispatch(loginUser(user))
+        return children
     }
-
-    console.log("isLoggedIn: ", isLoggedIn);
-    if (!isLoggedIn) {
-        return <Navigate to="/login" />;
-    }
-
-    return children;
+    return <Skeleton animation="pulse" sx={{width:"100vw", height:"100vh"}} ></Skeleton>
 };
 
 export default PrivateRoute;

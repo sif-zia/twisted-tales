@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
   writtenChapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
 
   readChapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
-});
+},{timestamps:true});
 
 const ChapterSchema = new mongoose.Schema({
   title: {

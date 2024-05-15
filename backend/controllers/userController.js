@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { User } = require("../models/models");
+const { User, Liked } = require("../models/models");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
@@ -43,11 +43,16 @@ const getUser = async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
-        res.status(200).json({ user });
+        let likes = await Liked.countDocuments({ likedChapter: { $in: user.writtenChapters }, type: "like" })
+        console.log(likes)
+        likes = likes === null ? 0 : likes
+
+        res.status(200).json({user, likes });
     } catch (error) {
         res.status(500).json({ error: error });
     }
 };
+
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -70,19 +75,19 @@ const loginUser = async (req, res) => {
 
         // Create JWT token
         const token = jwt.sign(
-            { id: user._id, name: user.name, email: user.email},
+            { id: user._id, name: user.name, email: user.email },
             process.env.secretKey,
             { expiresIn: "12h" }
         );
 
         // Set cookie with JWT token
         res.cookie("token", token, { httpOnly: true });
-        res.json({ message: "Login successful", user: user});
+        res.json({ message: "Login successful", user: user });
     });
 };
 
 const logoutUser = async (req, res) => {
-	res.clearCookie("token");
+    res.clearCookie("token");
     res.json({ message: `${req.user.name} Logout successful` });
 };
 

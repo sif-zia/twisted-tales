@@ -47,7 +47,7 @@ const NavBar = () => {
             const res = await api.get("/user/logout");
             if (res.status === 200) {
                 dispatch(logoutUser());
-                navigate("/");
+                navigate("/login");
             }
         }
         catch (error) {

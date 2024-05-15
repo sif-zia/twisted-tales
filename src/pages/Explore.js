@@ -11,13 +11,15 @@ import BestSellers from "../components/BestSellers";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import RecentStoryCard from "../components/RecentStoryCard";
 import AuthorOfTheMonth from "../components/AuthorOfTheMonth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPage } from "../slices/navbarSlice";
 import api from "../api/api";
 import StoriesLoading from "../components/StoriesLoading";
+import { getLoginStatus } from "../slices/userSlice";
 
 const Explore = () => {
 
+  const isLoggedIn = useSelector(getLoginStatus)
   const dispatch = useDispatch();
   dispatch(setPage("explore"));
 
@@ -212,7 +214,7 @@ const Explore = () => {
 
       {/*Genre Stories Carousel*/}
       {genres ? <Box sx={{ margin: "0 6.5vw" }}>
-         <Carousel
+        <Carousel
           responsive={CategoryResponsive}
           infinite={true}
           customButtonGroup={<ButtonGroup />}
@@ -293,7 +295,7 @@ const Explore = () => {
                 <div className="dash"></div>
               </Stack>
               <div className="another-post-area mb-50">
-                {writerOfTheMonth && <AuthorOfTheMonth writerOfTheMonth={writerOfTheMonth}/>}
+                {writerOfTheMonth && <AuthorOfTheMonth writerOfTheMonth={writerOfTheMonth} />}
               </div>
             </Stack>
           </div>
@@ -301,53 +303,56 @@ const Explore = () => {
       </div>
 
       {/*Top Picks Carousel*/}
-      <Typography sx={{ margin: "110px 7vw 25px 7vw" }} variant="h3">
-        Top Picks For You
-      </Typography>
-      <Box sx={{ margin: "0 6.5vw" }}>
-        <Carousel
-          responsive={CategoryResponsive}
-          infinite={true}
-          customButtonGroup={<ButtonGroup />}
-          renderButtonGroupOutside={true}
-          removeArrowOnDeviceType={["superLargeDesktop", "mobile"]}
-        >
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
+      {isLoggedIn &&
+        <Box>
+          <Typography sx={{ margin: "110px 7vw 25px 7vw" }} variant="h3">
+            Top Picks For You
+          </Typography>
+          <Box sx={{ margin: "0 6.5vw" }}>
+            <Carousel
+              responsive={CategoryResponsive}
+              infinite={true}
+              customButtonGroup={<ButtonGroup />}
+              renderButtonGroupOutside={true}
+              removeArrowOnDeviceType={["superLargeDesktop", "mobile"]}
+            >
+              <SlidingCategoryCard
+                title={CategoryData.title}
+                NoOfStories={CategoryData.NoOfStories}
+                imageURL={CategoryData.imageURL}
+                NoOfReads={CategoryData.NoOfReads}
+              />
 
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
+              <SlidingCategoryCard
+                title={CategoryData.title}
+                NoOfStories={CategoryData.NoOfStories}
+                imageURL={CategoryData.imageURL}
+                NoOfReads={CategoryData.NoOfReads}
+              />
 
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
+              <SlidingCategoryCard
+                title={CategoryData.title}
+                NoOfStories={CategoryData.NoOfStories}
+                imageURL={CategoryData.imageURL}
+                NoOfReads={CategoryData.NoOfReads}
+              />
 
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
+              <SlidingCategoryCard
+                title={CategoryData.title}
+                NoOfStories={CategoryData.NoOfStories}
+                imageURL={CategoryData.imageURL}
+                NoOfReads={CategoryData.NoOfReads}
+              />
 
-          <SlidingCategoryCard
-            title={CategoryData.title}
-            NoOfStories={CategoryData.NoOfStories}
-            imageURL={CategoryData.imageURL}
-            NoOfReads={CategoryData.NoOfReads}
-          />
-        </Carousel>
-      </Box>
+              <SlidingCategoryCard
+                title={CategoryData.title}
+                NoOfStories={CategoryData.NoOfStories}
+                imageURL={CategoryData.imageURL}
+                NoOfReads={CategoryData.NoOfReads}
+              />
+            </Carousel>
+          </Box>
+        </Box>}
     </div>
   );
 };

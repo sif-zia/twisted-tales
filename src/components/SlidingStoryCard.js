@@ -31,10 +31,10 @@ const SlidingStoryCard = ({title, description, imageURL, initiator}) => {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-           {title.length > 30 ? title.substring(0, 30) + "..." : title}
+           {title.length > 25 ? title.substring(0, 25) + "..." : title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {description.length > 50 ? description.substring(0, 50) + "..." : description}
+            {description.length > 45 ? description.substring(0, 45) + "..." : description}
            </Typography>
         </CardContent>
         <CardActions>
