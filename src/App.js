@@ -18,6 +18,7 @@ import AddChapter from "./pages/AddChapter";
 import AddStory from "./pages/AddStory";
 import UserDetails from "./pages/UserDetails";
 import PrivateRoute from "./components/PrivateRoute";
+import StoryRoadmap from "./pages/StoryRoadmap";
 
 function App() {
   // useEffect(() => {
@@ -103,9 +104,10 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route exact path="/" element={<Explore />} />
           <Route path="/story/:storyId/chapter/:chapterId" element={<PrivateRoute><Chapter /></PrivateRoute>} />
+          <Route path="/story/:storyId/addChapter" element={<PrivateRoute><AddChapter /></PrivateRoute>} />
+          <Route path="/story/:storyId" element={<PrivateRoute><StoryRoadmap /></PrivateRoute>} />
           <Route path="search" element={<Search />} />
           <Route path="addStory" element={<PrivateRoute><AddStory /></PrivateRoute>} />
-          <Route path="addChapter" element={<AddChapter />} />
           <Route path="userDetails" element={<UserDetails />} />
 
         </Route>

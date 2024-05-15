@@ -232,7 +232,7 @@ const deleteStory = async (req, res) => {
     await User.findByIdAndUpdate(storyToBeDeleted.initiator, { $pull: { initiatedStories: id } }) //only logged in user agar initiator hay khud to he can delete story
     await Story.findByIdAndDelete(id)
 
-    res.json({ message: "Story deleted successfully", story: story });
+    res.json({ message: "Story deleted successfully", story: storyToBeDeleted });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
