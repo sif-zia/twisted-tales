@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPage } from "../slices/navbarSlice";
 import Typography from "@mui/material/Typography";
@@ -14,12 +14,126 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useRef } from "react";
-const NextChapter = [{ name: "haha", id: 1 },
-                    { name: "wowww", id: 2 },
-                    { name: "grapeee", id: 3 }]; {/*Show chapters at current and greater depth only */}
+import { useLocation, useNavigate } from "react-router-dom";
+import api from "../api/api";
+import { Alert } from "@mui/material";
 
-const StoryName="Mystory"
+const getName = (Id, nodes) => {
+    const node = nodes.filter((chapter) => chapter._id === Id)[0];
+    return node.title;
+}
+
+const BFS = (edges, start, crr, nodes) => {
+    const queue = [start._id];
+    const depth = {}
+    depth[start._id] = 0;
+    const visited = new Set();
+    let result = [];
+
+    let crrDepth = 0;
+    while (queue.length > 0) {
+        const current = queue.shift();
+
+        if (visited.has(current)) {
+            continue;
+        }
+        
+        visited.add(current);
+        result.push({ chapterId: current, depth: depth });
+
+        let found = false;
+        for (const edge of edges) {
+            if (edge.source === current) {
+                console.log("From", getName(edge.source, nodes), "To", getName(edge.target, nodes))
+                queue.push(edge.target);
+                found = true;
+            }
+        }
+
+        if (found)
+            depth+=1;
+        console.log("Depth: ", depth);
+    }
+    return { result, crrDepth };
+};
+
 const AddChapter = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [nextChapters, setNextChapters] = useState([]);
+    const [story, setStory] = useState({});
+    const { storyId, prevChapter: prevChapterId } = location.state;
+    const [prevChapter, setPrevChapter] = useState(null);
+    const [error, setError] = useState(null);
+
+    const [file, setFile] = useState(null);
+    const [title, setTitle] = useState("");
+    const [desc, setDesc] = useState("");
+    const [content, setContent] = useState("");
+    const [nextChapter, setNextChapter] = useState("No Next Chapter");
+
+    useEffect(() => {
+        const sendEdgesRequest = async () => {
+            try {
+                const response = await api.get(`/story/${storyId}/roadmap`);
+                const { nodes, edges, start } = response.data;
+
+                setPrevChapter(nodes.filter((chapter) => chapter._id === prevChapterId)[0]);
+
+                const { result, crrDepth } = BFS(edges, start, prevChapterId, nodes);
+                console.log("Result: ", result, "CrrDepth: ", crrDepth);
+                const possibleNxtChpIdsWithDepth = result.filter((chapter) => (chapter.depth > crrDepth));
+                const nextChpIds = possibleNxtChpIdsWithDepth.map((chapter) => (chapter.chapterId));
+                const nextChps = nodes.filter((chapter) => nextChpIds.includes(chapter._id));
+                setNextChapters(nextChps);
+
+                const storyResponse = await api.get(`/story/${storyId}`);
+                setStory(storyResponse.data.story);
+            }
+            catch (error) {
+                console.error("Error fetching edges: ", error);
+                setError(error);
+            }
+        }
+
+        sendEdgesRequest();
+    }, [storyId, prevChapterId]);
+
+    useEffect(() => {
+        setError(null);
+    }, [title, desc, content, file]);
+
+    const handleChapterUpload = async (event) => {
+        event.preventDefault();
+
+        if (!title || !desc || !content || !file) {
+            setError("All fields are required");
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("desc", desc);
+            formData.append("content", content);
+            formData.append("coverImg", file);
+            formData.append("prevChpId", prevChapterId);
+            if (nextChapter !== "No Next Chapter") {
+                formData.append("nextChpId", nextChapter);
+            }
+
+            await api.post(`/story/${storyId}/chapter`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            navigate(`/story/${storyId}`);
+        } catch (error) {
+            console.error("Error adding chapter: ", error);
+        }
+    };
+
+
     const fileInputRef = useRef(null);
 
     const handleUploadCover = () => {
@@ -29,19 +143,11 @@ const AddChapter = () => {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         setFile(file);
-        // You can access file properties such as file.name, file.type, file.size, etc.
     };
 
-    const [genre, setGenre] = useState(null);
-    const [type, setType] = useState(null);
-    const [file, setFile] = useState(null);
 
-    const handleGenreChange = (event) => {
-        setGenre(event.target.value);
-    };
-
-    const handleTypeChange = (event) => {
-        setType(event.target.value);
+    const handleNextChapterChange = (event) => {
+        setNextChapter(event.target.value);
     };
 
     const dispatch = useDispatch();
@@ -55,7 +161,7 @@ const AddChapter = () => {
                 <div className="container">
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="index-2.html">Story</a></li>
+                            <li className="breadcrumb-item"><a href="index-2.html">{story?.title}</a></li>
                             <li className="breadcrumb-item active" aria-current="page">Add Chapter</li>
                         </ol>
                     </nav>
@@ -64,20 +170,30 @@ const AddChapter = () => {
             <Box
                 sx={{
                     margin: {
-                        xs: "50px 3vw 0 3vw", // Margin of 10px on extra-small screens and up
-                        sm: "50px 5vw 0 5vw", // Margin of 20px on small screens and up
-                        md: "50px 10vw 0 10vw", // Margin of 30px on medium screens and up
-                        lg: "50px 15vw 0 15vw", // Margin of 40px on large screens and up
-                        xl: "50px 16.25vw 0 16.25vw", // Margin of 50px on extra-large screens and up
+                        xs: "50px 3vw 0 3vw",
+                        sm: "50px 5vw 0 5vw",
+                        md: "50px 10vw 0 10vw",
+                        lg: "50px 15vw 0 15vw",
+                        xl: "50px 16.25vw 0 16.25vw",
                     },
                 }}
                 minHeight="65vh"
             >
-                <Typography variant="h3">Add Chapter to {StoryName}</Typography>
+                <Typography variant="h3">Add Sequel to {prevChapter?.title}</Typography>
 
                 <Grid container justifyContent="center" spacing={2} marginTop={2}>
+                    {error && <Grid item xs={12}>
+                        <Alert severity="error">{error}</Alert>
+                    </Grid>}
                     <Grid item xs={6}>
-                        <TextField variant="outlined" fullWidth label="Title" id="title" />
+                        <TextField
+                            variant="outlined"
+                            fullWidth
+                            label="Title"
+                            id="title"
+                            value={title}
+                            onChange={(e) => { setTitle(e.target.value) }}
+                        />
                     </Grid>
                     <Grid item xs={6}>
                         <FormControl fullWidth>
@@ -85,12 +201,13 @@ const AddChapter = () => {
                             <Select
                                 labelId="next-chp-label"
                                 id="next-chp"
-                                value={type}
+                                value={nextChapter}
                                 label="Next Chapter"
-                                onChange={handleTypeChange}
+                                onChange={handleNextChapterChange}
                             >
-                                {NextChapter.map((chapter) => (
-                                    <MenuItem value={chapter.id}>{chapter.name}</MenuItem>
+                                <MenuItem key="no-next-chapter" value="No Next Chapter" selected="true">No Next Chapter</MenuItem>
+                                {nextChapters.map((chapter) => (
+                                    <MenuItem key={chapter._id} value={chapter._id}>{chapter.title}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -102,11 +219,10 @@ const AddChapter = () => {
                             multiline
                             label="Description"
                             id="desc"
+                            value={desc}
+                            onChange={(e) => { setDesc(e.target.value) }}
                         />
                     </Grid>
-
-
-
                     <Grid item xs={12}>
                         <TextField
                             variant="outlined"
@@ -114,6 +230,8 @@ const AddChapter = () => {
                             multiline
                             label="Draft"
                             id="draft"
+                            value={content}
+                            onChange={(e) => { setContent(e.target.value) }}
                             rows={3}
                         />
                     </Grid>
@@ -124,13 +242,13 @@ const AddChapter = () => {
                             }}
                             id="cover-img"
                             label="Cover Image"
-                            defaultValue={file.name}
+                            value={file.name}
                             fullWidth
                         />
                     </Grid>}
                     <Grid item xs={12}>
                         <Stack direction="row" justifyContent="space-between">
-                            <button type="submit" class="eg-btn btn--primary btn--lg">
+                            <button type="submit" class="eg-btn btn--primary btn--lg" onClick={handleChapterUpload}>
                                 Publish
                             </button>
 

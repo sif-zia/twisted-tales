@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { getLoginStatus, loginUser } from "../slices/userSlice";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../slices/userSlice";
 import api from "../api/api"
-import Skeleton from "@mui/material/Skeleton"
+import {CircularProgress, Stack} from "@mui/material"
 
 const PrivateRoute = ({ children }) => {
     const dispatch = useDispatch();
-    const isLoggedIn = useSelector(getLoginStatus);
     const [user, setUser] = useState(null)
     useEffect(() => {
 
@@ -33,7 +32,11 @@ const PrivateRoute = ({ children }) => {
         dispatch(loginUser(user))
         return children
     }
-    return <Skeleton animation="pulse" sx={{width:"100vw", height:"100vh"}} ></Skeleton>
+    return (
+        <Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
+				<CircularProgress style={{width: "75px"}}/>
+			</Stack>
+    )
 };
 
 export default PrivateRoute;
