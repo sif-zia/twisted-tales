@@ -84,7 +84,6 @@ function StoryRoadmap() {
 				setNodes(layoutedElements.nodes);
 				setEdges(layoutedElements.edges);
 				setLoading(false);
-				zoomOut();
 			} catch (error) {
 				console.error('Error fetching story roadmap:', error);
 				setLoading(false);
@@ -102,13 +101,6 @@ function StoryRoadmap() {
 			</Stack>
 		);
 	}
-
-	const zoomOut = () => {
-		if (reactFlowWrapper.current && reactFlowWrapper.current.zoomTo) {
-			const zoomLevel = 0.5; // Change this value to the desired zoom level
-			reactFlowWrapper.current.zoomTo(zoomLevel);
-		}
-	};
 
 	return (
 		<Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>

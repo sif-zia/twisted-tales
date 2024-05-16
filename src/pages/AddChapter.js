@@ -18,44 +18,38 @@ import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { Alert } from "@mui/material";
 
-const getName = (Id, nodes) => {
-    const node = nodes.filter((chapter) => chapter._id === Id)[0];
-    return node.title;
+const findChildern = (edges, nodes) => {
+    const children = {};
+    for (const node of nodes) {
+        children[node._id] = [];
+    }
+
+    for (const edge of edges) {
+        children[edge.source].push(edge.target);
+    }
+
+    return children;
 }
 
-const BFS = (edges, start, crr, nodes) => {
-    const queue = [start._id];
-    const depth = {}
-    depth[start._id] = 0;
-    const visited = new Set();
-    let result = [];
-
-    let crrDepth = 0;
-    while (queue.length > 0) {
-        const current = queue.shift();
-
-        if (visited.has(current)) {
-            continue;
-        }
-        
-        visited.add(current);
-        result.push({ chapterId: current, depth: depth });
-
-        let found = false;
-        for (const edge of edges) {
-            if (edge.source === current) {
-                console.log("From", getName(edge.source, nodes), "To", getName(edge.target, nodes))
-                queue.push(edge.target);
-                found = true;
-            }
-        }
-
-        if (found)
-            depth+=1;
-        console.log("Depth: ", depth);
+const updateChildrenDepth = (children, depth, crr) => {
+    for (const child of children[crr]) {
+        depth[child] = Math.max(depth[crr] + 1, depth[child]);
+        depth = updateChildrenDepth(children, depth, child);
     }
-    return { result, crrDepth };
-};
+
+    return depth;
+}
+
+const getDepth = (edges, crr, nodes) => {
+    let depth = {};
+    for (const node of nodes) {
+        depth[node._id] = 0;
+    }
+
+    const children = findChildern(edges, nodes);
+    depth = updateChildrenDepth(children, depth, crr);
+    return depth;
+}
 
 const AddChapter = () => {
     const location = useLocation();
@@ -80,11 +74,13 @@ const AddChapter = () => {
 
                 setPrevChapter(nodes.filter((chapter) => chapter._id === prevChapterId)[0]);
 
-                const { result, crrDepth } = BFS(edges, start, prevChapterId, nodes);
-                console.log("Result: ", result, "CrrDepth: ", crrDepth);
-                const possibleNxtChpIdsWithDepth = result.filter((chapter) => (chapter.depth > crrDepth));
-                const nextChpIds = possibleNxtChpIdsWithDepth.map((chapter) => (chapter.chapterId));
-                const nextChps = nodes.filter((chapter) => nextChpIds.includes(chapter._id));
+                const depth = getDepth(edges, start._id, nodes);
+                console.log("Depths: ");
+                for (const node of nodes) {
+                    console.log(node.title, depth[node._id]);
+                }
+                const crrDepth = depth[prevChapterId] + 1;
+                const nextChps = nodes.filter((chapter) => depth[chapter._id] >= crrDepth && chapter._id !== prevChapterId);
                 setNextChapters(nextChps);
 
                 const storyResponse = await api.get(`/story/${storyId}`);
