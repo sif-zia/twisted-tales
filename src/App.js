@@ -10,8 +10,6 @@ import {
 import Layout from "./components/Layout";
 import VisitorLayout from "./components/VisitorLayout";
 
-import api from "./api/api";
-
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Explore from "./pages/Explore";
@@ -22,10 +20,14 @@ import AddStory from "./pages/AddStory";
 import UserDetails from "./pages/UserDetails";
 import PrivateRoute from "./components/PrivateRoute";
 import StoryRoadmap from "./pages/StoryRoadmap";
-import { Stack } from "@mui/system";
-import { CircularProgress } from "@mui/material";
+import ChangePassword from "./pages/ChangePassword";
+
+import { CircularProgress, Stack } from "@mui/material";
 
 import { loginUser } from "./slices/userSlice";
+import UpdateProfile from "./pages/UpdateProfile";
+
+import api from "./api/api";
 
 function App() {
   // useEffect(() => {
@@ -75,8 +77,6 @@ function App() {
         const crrUser = response.data.user
         setUser(crrUser)
         dispatch(loginUser(crrUser))
-        console.log("Crr User", crrUser)
-        console.log("User", user)
       }
       catch (err) {
         console.log(err)
@@ -85,6 +85,7 @@ function App() {
     }
 
     sendLoginRequest()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const theme = createTheme({
@@ -138,11 +139,13 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route exact path="/" element={<Explore />} />
               <Route path="story/:storyId/chapter/:chapterId" element={<PrivateRoute><Chapter /></PrivateRoute>} />
-              <Route path="search" element={<PrivateRoute><Search /></PrivateRoute>} />
-              <Route path="addStory" element={<PrivateRoute><AddStory /></PrivateRoute>} />
-              <Route path="userDetails/:userId" element={<PrivateRoute><UserDetails /></PrivateRoute>} />
               <Route path="story/:storyId/addChapter" element={<PrivateRoute><AddChapter /></PrivateRoute>} />
               <Route path="story/:storyId" element={<PrivateRoute><StoryRoadmap /></PrivateRoute>} />
+              <Route path="userDetails/:userId" element={<PrivateRoute><UserDetails /></PrivateRoute>} />
+              <Route path="search" element={<PrivateRoute><Search /></PrivateRoute>} />
+              <Route path="addStory" element={<PrivateRoute><AddStory /></PrivateRoute>} />
+              <Route path="updateProfile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
+              <Route path="changePassword" element={<PrivateRoute><ChangePassword /></PrivateRoute>} />
             </Route>
             <Route path="/login" element={<VisitorLayout />}>
               <Route index element={<Login />} />
