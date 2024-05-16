@@ -1,55 +1,62 @@
 import React from "react";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import { format } from 'date-fns';
 
 const BestSellers = ({ stories }) => {
+
+  const getFormattedDate = (createdAt, formatString) => {
+    if (!createdAt) {
+      return " "
+    }
+    const formatted = format(new Date(createdAt), formatString);
+    return formatted
+  }
+
   return (
     <section className="latest-blog-section pt-100 pb-100">
       <div className="container">
         <div className="row align-items-center mb-40">
           <div className="col-lg-9 text-lg-start text-center">
             <div className="section-title-1">
-              <h2>Best Sellers</h2>
+              <h2>Top Three</h2>
               <div className="subtitle justify-content-lg-start justify-content-center">
-			  	<LocalFireDepartmentIcon color="primary" />
-                <span>Where Dreams Become Best Sellers</span>
+                <LocalFireDepartmentIcon color="primary" />
+                <span>Explore Boundless Worlds of Tales</span>
               </div>
             </div>
           </div>
-          
+
         </div>
         <div className="row justify-content-center gy-5">
           <div className="col-lg-4 col-md-6 col-sm-10">
             <div className="blog-grid-1">
               <a href="blog-classic.html" className="eg-badge badge--white">
-                {stories[0].genre}
+                {stories[0].story.genre}
               </a>
               <a href="post-format-no-sidebar-02.html" className="image">
-                <img src={stories[0].imageURL} alt="image" />
+                <img src={`http://localhost:4000/getImage?imagePath=${stories[0].story.coverImgURL}`} alt="image" />
               </a>
               <div className="content">
                 <ul>
                   <li>
-                    <a href="author-details.html">
+                    <a href={`/userDetails/${stories[0].story.initiator?._id}`}>
                       By{" "}
-                      {stories[0].author.slice(
-                        stories[0].author.indexOf(" ") + 1,
-                        stories[0].author.length
-                      )}
+                      {stories[0].story.initiator?.name.slice(0, 15)}
                     </a>
                   </li>
                   <li>
-                    <a href="blog-standard.html">{stories[0].uploadDate}</a>
+                    <a href="blog-standard.html">{getFormattedDate(stories[0].story.createdAt, "MMMM do, yyyy")}</a>
                   </li>
-                  <li>{stories[0].noOfReads}k Reads</li>
+                  <li>{stories[0].readCount} Reads</li>
                 </ul>
                 <h4>
                   <a href="post-format-no-sidebar-02.html">
-                    {stories[0].storyName}
+                    {stories[0].story.title}
                   </a>
                 </h4>
                 <div className="bottom-area">
                   <a
-                    href="post-format-no-sidebar-02.html"
+                    href={`/story/${stories[0].story?._id}`}
                     className="eg-btn arrow-btn"
                   >
                     Read Now<i className="bi bi-arrow-right"></i>
@@ -73,31 +80,28 @@ const BestSellers = ({ stories }) => {
             <div className="blog-grid-1 sibling-2">
               <div className="content">
                 <a href="blog-classic.html" className="eg-badge badge--red">
-                  {stories[1].genre}
+                  {stories[1].story.genre}
                 </a>
                 <ul>
                   <li>
-                    <a href="author-details.html">
+                    <a href={`/userDetails/${stories[1].story?.initiator?._id}`}>
                       By{" "}
-                      {stories[1].author.slice(
-                        stories[1].author.indexOf(" ") + 1,
-                        stories[1].author.length
-                      )}
+                      {stories[1].story.initiator?.name.slice(0, 15)}
                     </a>
                   </li>
                   <li>
-                    <a href="blog-standard.html">{stories[1].uploadDate}</a>
+                    <a href="blog-standard.html">{getFormattedDate(stories[1].story.createdAt, "MMMM do, yyyy")}</a>
                   </li>
-                  <li>{stories[1].noOfReads}k Reads</li>
+                  <li>{stories[1].readCount} Reads</li>
                 </ul>
                 <h4>
                   <a href="post-format-no-sidebar-02.html">
-                    {stories[1].storyName}
+                    {stories[1].story.title}
                   </a>
                 </h4>
                 <div className="bottom-area">
                   <a
-                    href="post-format-no-sidebar-02.html"
+                    href={`/story/${stories[1].story._id}`}
                     className="eg-btn arrow-btn"
                   >
                     Read Now<i className="bi bi-arrow-right"></i>
@@ -116,42 +120,39 @@ const BestSellers = ({ stories }) => {
                 </div>
               </div>
               <a href="post-format-no-sidebar-02.html" className="image">
-                <img src={stories[1].imageURL} alt="image" />
+                <img src={`http://localhost:4000/getImage?imagePath=${stories[1].story.coverImgURL}`} alt="image" />
               </a>
             </div>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-10">
             <div className="blog-grid-1">
               <a href="blog-classic.html" className="eg-badge badge--white">
-                {stories[2].genre}
+                {stories[2].story.genre}
               </a>
               <a href="post-format-no-sidebar-02.html" className="image">
-                <img src={stories[2].imageURL} alt="image" />
+                <img src={`http://localhost:4000/getImage?imagePath=${stories[2].story.coverImgURL}`} alt="image" />
               </a>
               <div className="content">
                 <ul>
                   <li>
-                    <a href="author-details.html">
+                    <a href={`/userDetails/${stories[2].story.initiator?._id}`}>
                       By{" "}
-                      {stories[2].author.slice(
-                        stories[2].author.indexOf(" ") + 1,
-                        stories[2].author.length
-                      )}
+                      {stories[2].story.initiator?.name.slice(0, 15)}
                     </a>
                   </li>
                   <li>
-                    <a href="blog-standard.html">{stories[2].uploadDate}</a>
+                    <a href="blog-standard.html">{stories[2].story.uploadDate}</a>
                   </li>
-                  <li>{stories[2].noOfReads}k Reads</li>
+                  <li>{stories[2].readCount} Reads</li>
                 </ul>
                 <h4>
                   <a href="post-format-no-sidebar-02.html">
-                    {stories[2].storyName}
+                    {stories[2].story.title}
                   </a>
                 </h4>
                 <div className="bottom-area">
                   <a
-                    href="post-format-no-sidebar-02.html"
+                    href={`/story/${stories[2].story._id}`}
                     className="eg-btn arrow-btn"
                   >
                     Read Now<i className="bi bi-arrow-right"></i>

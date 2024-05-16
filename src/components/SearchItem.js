@@ -34,27 +34,27 @@ const SearchItem = ({storyName, date, genre, coverImgURL, isStory, storyId, chap
           </li>
         </ul>
         <h4>
-          <a href="post-format-no-sidebar-02.html">
+          <a href={`/story/${storyId}`}>
             {storyName}
           </a>
         </h4>
         <div className="bottom-area">
           {!isStory ?
-          <a onClick={()=>  window.location.href = `http://localhost:3000/story/${storyId}/chapter/${chapterId} `}className="eg-btn arrow-btn">
+          <a href={`/story/${storyId}/chapter/${chapterId}`}className="eg-btn arrow-btn">
             Read Chapter<i className="bi bi-arrow-right"></i>
           </a>
           :
           // onclick for story set karna hayyyyyyyyyyyyy
-          <a href="" className="eg-btn arrow-btn">
+          <a href={`/story/${storyId}`} className="eg-btn arrow-btn">
             Read Story<i className="bi bi-arrow-right"></i>
           </a>
         }
           
         </div>
       </div>
-      <a href="post-format-no-sidebar-02.html" className="image" style={{margin:"0", padding:"0"}}>
+      <div className="image" style={{margin:"0", padding:"0"}}>
         <img src={`http://localhost:4000/getImage?imagePath=${coverImgURL}`} alt="search result" style={{height:"24vh"}}/>
-      </a>
+      </div>
     </div>
     </Paper>
   );

@@ -16,6 +16,7 @@ import { setPage } from "../slices/navbarSlice";
 import api from "../api/api";
 import StoriesLoading from "../components/StoriesLoading";
 import { getLoginStatus } from "../slices/userSlice";
+import SlidingTopPickCard from "../components/SlidingTopPickCard";
 
 const Explore = () => {
 
@@ -27,6 +28,8 @@ const Explore = () => {
   const [genres, setGenres] = useState(null);
   const [latestStories, setLatestStories] = useState(null);
   const [writerOfTheMonth, setWriterOfTheMonth] = useState(null);
+  const [topPicks, setTopPicks] = useState(null)
+  const [topThree, setTopThree] = useState(null)
 
   useEffect(() => {
     const getTrendingStories = async () => {
@@ -68,6 +71,19 @@ const Explore = () => {
   }, [])
 
   useEffect(() => {
+    const getTopThreeStories = async () => {
+      try {
+        const topThreeResponse = await api.get("/explore/topThree");
+        setTopThree(topThreeResponse.data.topThreeStories);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    getTopThreeStories();
+  }, [])
+
+  useEffect(() => {
     const getWriterOfTheMonth = async () => {
       try {
         const response = await api.get("/explore/writerOfTheMonth");
@@ -83,8 +99,10 @@ const Explore = () => {
   useEffect(() => {
     const getTopPicks = async () => {
       try {
-        const response = await api.get("/explore/topPicks");
-        console.log(response.data.topPicks);
+        const topPicksResponse = await api.get("/explore/topPicks");
+        const temp = topPicksResponse.data.topPicks
+        console.log("Top Picks : ", temp);
+        setTopPicks(temp)
       } catch (err) {
         console.error(err);
       }
@@ -192,6 +210,7 @@ const Explore = () => {
         >
           {trendingStories.map((trendingStory) => (
             <SlidingStoryCard
+              id={trendingStory.story._id}
               title={trendingStory.story.title}
               description={trendingStory.story.desc}
               imageURL={`http://localhost:4000/getImage?imagePath=${trendingStory.story.coverImgURL}`}
@@ -233,7 +252,10 @@ const Explore = () => {
         </Carousel>
       </Box> : <StoriesLoading />}
 
-      <BestSellers stories={BestSellersData} />
+      {topThree &&
+        <BestSellers stories={topThree} />
+      }
+
 
       {/*Latest Posts*/}
       <div className="home-two-recent-post pb-100">
@@ -249,7 +271,7 @@ const Explore = () => {
                 </div>
                 <div className="col-lg-3 d-flex justify-content-lg-end justify-content-center">
                   <a
-                    href="blog-standard.html"
+                    href={"/search"}
                     className="eg-btn arrow-btn-2 mt-lg-0 mt-4"
                   >
                     Explore More<i className="bi bi-arrow-right"></i>
@@ -262,30 +284,46 @@ const Explore = () => {
             <div className="col-lg-8">
               {latestStories &&
                 <div className="row justify-content-center gy-4">
-                  <RecentStoryCard
-                    storyName={latestStories[0].title}
-                    genre={latestStories[0].genre}
-                    author={latestStories[0].initiator.name}
-                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[0].coverImgURL}`}
-                  />
-                  <RecentStoryCard
-                    storyName={latestStories[1].title}
-                    genre={latestStories[1].genre}
-                    author={latestStories[1].initiator.name}
-                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[1].coverImgURL}`}
-                  />
-                  <RecentStoryCard
-                    storyName={latestStories[2].title}
-                    genre={latestStories[2].genre}
-                    author={latestStories[2].initiator.name}
-                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[2].coverImgURL}`}
-                  />
-                  <RecentStoryCard
-                    storyName={latestStories[3].title}
-                    genre={latestStories[3].genre}
-                    author={latestStories[3].initiator.name}
-                    imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[3].coverImgURL}`}
-                  />
+                  {latestStories[0] &&
+                    <RecentStoryCard
+                      id={latestStories[0]._id}
+                      storyName={latestStories[0].title}
+                      genre={latestStories[0].genre}
+                      authorId={latestStories[0].initiator._id}
+                      author={latestStories[0].initiator.name}
+                      imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[0].coverImgURL}`}
+                    />
+                  }
+                  {latestStories[1] &&
+                    <RecentStoryCard
+                      id={latestStories[1]._id}
+                      storyName={latestStories[1].title}
+                      genre={latestStories[1].genre}
+                      authorId={latestStories[1].initiator._id}
+                      author={latestStories[1].initiator.name}
+                      imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[1].coverImgURL}`}
+                    />
+                  }
+                  {latestStories[2] &&
+                    <RecentStoryCard
+                      id={latestStories[2]._id}
+                      storyName={latestStories[2].title}
+                      genre={latestStories[2].genre}
+                      authorId={latestStories[2].initiator._id}
+                      author={latestStories[2].initiator.name}
+                      imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[2].coverImgURL}`}
+                    />
+                  }
+                  {latestStories[3] &&
+                    <RecentStoryCard
+                      id={latestStories[3]._id}
+                      storyName={latestStories[3].title}
+                      genre={latestStories[3].genre}
+                      authorId={latestStories[3].initiator._id}
+                      author={latestStories[3].initiator.name}
+                      imageURL={`http://localhost:4000/getImage?imagePath=${latestStories[3].coverImgURL}`}
+                    />
+                  }
                 </div>
               }
             </div>
@@ -303,11 +341,12 @@ const Explore = () => {
       </div>
 
       {/*Top Picks Carousel*/}
-      {isLoggedIn &&
+      {topPicks && (
         <Box>
           <Typography sx={{ margin: "110px 7vw 25px 7vw" }} variant="h3">
             Top Picks For You
           </Typography>
+
           <Box sx={{ margin: "0 6.5vw" }}>
             <Carousel
               responsive={CategoryResponsive}
@@ -316,43 +355,22 @@ const Explore = () => {
               renderButtonGroupOutside={true}
               removeArrowOnDeviceType={["superLargeDesktop", "mobile"]}
             >
-              <SlidingCategoryCard
-                title={CategoryData.title}
-                NoOfStories={CategoryData.NoOfStories}
-                imageURL={CategoryData.imageURL}
-                NoOfReads={CategoryData.NoOfReads}
-              />
-
-              <SlidingCategoryCard
-                title={CategoryData.title}
-                NoOfStories={CategoryData.NoOfStories}
-                imageURL={CategoryData.imageURL}
-                NoOfReads={CategoryData.NoOfReads}
-              />
-
-              <SlidingCategoryCard
-                title={CategoryData.title}
-                NoOfStories={CategoryData.NoOfStories}
-                imageURL={CategoryData.imageURL}
-                NoOfReads={CategoryData.NoOfReads}
-              />
-
-              <SlidingCategoryCard
-                title={CategoryData.title}
-                NoOfStories={CategoryData.NoOfStories}
-                imageURL={CategoryData.imageURL}
-                NoOfReads={CategoryData.NoOfReads}
-              />
-
-              <SlidingCategoryCard
-                title={CategoryData.title}
-                NoOfStories={CategoryData.NoOfStories}
-                imageURL={CategoryData.imageURL}
-                NoOfReads={CategoryData.NoOfReads}
-              />
+              {topPicks.map(story => (
+                <SlidingTopPickCard
+                  key={story._id} // Add key prop
+                  id={story._id}
+                  title={story.title}
+                  genre={story.genre}
+                  authorId={story.initiator?._id}
+                  author={story.initiator?.name}
+                  imageURL={`http://localhost:4000/getImage?imagePath=${story.coverImgURL}`}
+                />
+              ))}
             </Carousel>
           </Box>
-        </Box>}
+        </Box>
+      )}
+
     </div>
   );
 };

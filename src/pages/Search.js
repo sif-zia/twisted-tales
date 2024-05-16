@@ -14,7 +14,7 @@ import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { useMediaQuery } from "@mui/material";
+import { useMediaQuery, CircularProgress } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import { useDispatch } from "react-redux";
 import { setPage } from "../slices/navbarSlice";
@@ -73,21 +73,22 @@ const Search = () => {
   const [stories, setStories] = useState([]) //show trending stories by default
   const [search, setSearch] = useState(null);
   const [names, setNames] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
- 
-  const sendAuthorsRequest = async()=>{
-    try{
-      const authorsResponse = await api.get( "http://localhost:4000/story/authors")
-      const temp  = authorsResponse.data.authors
+
+  const sendAuthorsRequest = async () => {
+    try {
+      const authorsResponse = await api.get("http://localhost:4000/story/authors")
+      const temp = authorsResponse.data.authors
       setNames(temp);
     }
-    catch(err){
+    catch (err) {
       console.log(err)
     }
 
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     sendAuthorsRequest()
   }, [])
 
@@ -128,14 +129,22 @@ const Search = () => {
 
 
 
+
   useEffect(() => {
-    setChapters([]);
-    setStories([])
-    if(search!== "")
-    {
-      sendChapterSearchRequest();
-      sendStorySearchRequest();
+
+    const handleSearchRequest = async () => {
+
+      setIsLoading(true)
+      setChapters([]);
+      setStories([])
+      if (search !== "") {
+        await sendChapterSearchRequest();
+        await sendStorySearchRequest();
+        setIsLoading(false)
+      }
     }
+
+    handleSearchRequest()
 
   }, [search]);
 
@@ -157,6 +166,7 @@ const Search = () => {
           </nav>
         </div>
       </div>
+
       <Grid container>
         <Grid item xs={1}></Grid>
         <Grid item container xs={10}>
@@ -184,55 +194,63 @@ const Search = () => {
                 />
               </FormControl>
 
-           
+
             </Stack>
 
-            {chapters && stories &&
-            <Grid
-              container
-              direction={isDesktop ? "row" : "column"}
-              spacing={2}
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              my = {2}
-            >
-              {stories?.map((story)=>(
-                 <Grid item xs={6}>
-                 <SearchItem
-                   storyName={story.title}
-                   date={story.createdAt}
-                   genre={story.genre}
-                   coverImgURL={story.coverImgURL}
-                   isStory={true}
-                   storyId={story._id}
-                   chapterId={""}
-                 />
-               </Grid>
-              ))}
-               {chapters?.map((chapter)=>(
-                 <Grid item xs={6}>
-                 <SearchItem
-                   storyName={chapter.title}
-                   date={chapter.createdAt}
-                   genre={chapter.story.genre}
-                   coverImgURL={chapter.coverImgURL}
-                   isStory={false}
-                   storyId={chapter.story._id}
-                   chapterId={chapter._id}
-                 />
-               </Grid>
-              ))}
-            
-            </Grid>
+
+            {isLoading && search!=="" &&
+              <Grid>
+                <Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
+                  <CircularProgress style={{ width: "75px" }} />
+                </Stack>
+              </Grid>
             }
-            {chapters.length == 0  && stories.length==0 && search?.length>0 &&
-            <Box style={{ display:"flex", justifyContent:"center", alignItems:"center" }}>
-              <Alert style={{width: "30vw" , display:"flex", justifyContent:"center", alignItems:"center", borderRadius:"20px"}} severity="warning">No Results Found</Alert>
-            </Box>
+            {!isLoading && chapters && stories &&
+              <Grid
+                container
+                direction={isDesktop ? "row" : "column"}
+                spacing={2}
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                my={2}
+              >
+                {stories?.map((story) => (
+                  <Grid item xs={6}>
+                    <SearchItem
+                      storyName={story.title}
+                      date={story.createdAt}
+                      genre={story.genre}
+                      coverImgURL={story.coverImgURL}
+                      isStory={true}
+                      storyId={story._id}
+                      chapterId={""}
+                    />
+                  </Grid>
+                ))}
+                {chapters?.map((chapter) => (
+                  <Grid item xs={6}>
+                    <SearchItem
+                      storyName={chapter.title}
+                      date={chapter.createdAt}
+                      genre={chapter.story.genre}
+                      coverImgURL={chapter.coverImgURL}
+                      isStory={false}
+                      storyId={chapter.story._id}
+                      chapterId={chapter._id}
+                    />
+                  </Grid>
+                ))}
+
+              </Grid>
+            }
+            {!isLoading && chapters.length == 0 && stories.length == 0 && search?.length > 0 &&
+              <Box style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Alert style={{ width: "30vw", display: "flex", justifyContent: "center", alignItems: "center", borderRadius: "20px" }} severity="warning">No Results Found</Alert>
+              </Box>
             }
             <Stack justifyContent={"center"} alignItems={"center"} m={6}>
-              <Pagination count={isSmallScreen ? 5 : 10} color="primary"/> 
+              <Pagination count={isSmallScreen ? 5 : 10} color="primary" />
               {/* onChange={changePage} */}
             </Stack>
           </Grid>

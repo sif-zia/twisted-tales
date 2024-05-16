@@ -89,7 +89,6 @@ function StoryRoadmap() {
 		try {
 			const response = await api.delete(`/story/${storyId}`);
 			setSuccess(response.data.message);
-			navigate('/');
 		} catch (error) {
 			setError(error.response.data.error);
 		}
@@ -158,40 +157,40 @@ function StoryRoadmap() {
 				<div style={{ width: '100%', height: '100%', backgroundColor: '#f0f4f8' }}>
 					{story &&
 						<Paper elevation={1} style={{ width: '100%', backgroundColor: '#f5f4e9' }}>
-							<Stack direction="row" width="100%" justifyContent={(crrUser._id === story.initiator) ? "space-between" : "flex-start"} paddingX={3} paddingY={1}>
-								<div>
-									<Typography variant="h2" color="primary">{story.title + " Roadmap"}</Typography>
-									<Typography variant="subtitle1" color="grey" paddingLeft={3}>{"by " + story.author.name}</Typography>
-								</div>
-								{(crrUser._id === story.initiator) && <React.Fragment>
-									<Button variant="contained" onClick={handleOpenDialog} color="primary">
-										Delete Story
-									</Button>
-									<Dialog
-										open={openDialog}
-										onClose={handleCloseDialog}
-										aria-labelledby="alert-dialog-title"
-										aria-describedby="alert-dialog-description"
-									>
-										<DialogTitle id="alert-dialog-title">
-											{"Delete " + story?.title + "?"}
-										</DialogTitle>
-										<DialogContent>
-											<DialogContentText id="alert-dialog-description">
-												{!error && !success && "Are you sure you want delete this story?"}
-												{error && error}
-												{success && success}
-											</DialogContentText>
-										</DialogContent>
-										<DialogActions>
-											<Button variant="outlined" onClick={handleCloseDialog} autoFocus >Cancel</Button>
-											{!success && !error && <Button variant="contained" onClick={handleDeleteStory} color="error"><strong>Delete</strong></Button>}
-											{success && <Button variant="contained" onClick={() => { navigate(`story/${storyId}`) }} color="error"><strong>Okay</strong></Button>}
-											{error && <Button variant="contained" onClick={handleCloseDialog} color="error"><strong>Okay</strong></Button>}
-										</DialogActions>
-									</Dialog>
-								</React.Fragment>}
-							</Stack>
+						<Stack direction="row" width="100%" justifyContent={(crrUser._id === story.initiator) ? "space-between" : "flex-start"} paddingX={3} paddingY={1}>
+							<div>
+							<Typography variant="h2" color="primary">{story.title + " Roadmap"}</Typography>
+							<Typography variant="subtitle1" color="grey" paddingLeft={3}>{"by " + story.author.name}</Typography>
+							</div>
+							{(crrUser._id === story.initiator) && <React.Fragment>
+								<Button variant="contained" onClick={handleOpenDialog} color="primary">
+									Delete Story
+								</Button>
+								<Dialog
+									open={openDialog}
+									onClose={handleCloseDialog}
+									aria-labelledby="alert-dialog-title"
+									aria-describedby="alert-dialog-description"
+								>
+									<DialogTitle id="alert-dialog-title">
+										{"Delete " + story?.title + "?"}
+									</DialogTitle>
+									<DialogContent>
+										<DialogContentText id="alert-dialog-description">
+											{!error && !success && "Are you sure you want delete this story?"}
+											{error && error}
+											{success && success}
+										</DialogContentText>
+									</DialogContent>
+									<DialogActions>
+										<Button variant="outlined" onClick={handleCloseDialog} autoFocus >Cancel</Button>
+										{!success && !error && <Button variant="contained" onClick={handleDeleteStory} color="error"><strong>Delete</strong></Button>}
+										{success && <Button variant="contained" onClick={() => { navigate("/") }} color="error"><strong>Okay</strong></Button>}
+										{error && <Button variant="contained" onClick={handleCloseDialog} color="error"><strong>Okay</strong></Button>}
+									</DialogActions>
+								</Dialog>
+							</React.Fragment>}
+						</Stack>
 						</Paper>}
 					<ReactFlow
 						nodes={nodes}

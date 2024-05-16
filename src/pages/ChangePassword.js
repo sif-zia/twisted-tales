@@ -36,7 +36,7 @@ const ChangePassword = () => {
 
   useEffect(() => {
     setError(null);
-    setSuccess(null);
+
 
     if (oldPassword.length && password.length && retypePassword.length) {
       setEnableButton(true);
@@ -60,12 +60,15 @@ const ChangePassword = () => {
 
   const sendPasswordChangeRequest = async () => {
     try {
-      await api.post(`/user/changePassword/${crrUser}`, {
-        oldPassword: oldPassword,
-        password: password,
-        retypePassword: retypePassword,
+      console.log(password, retypePassword, oldPassword)
+      const changePasswordResponse = await api.put(`/user/updatePassword/${crrUser._id}`, {
+        newPassword: retypePassword
       });
       setSuccess("Password Changed Successfully!");
+      setPassword("")
+      setRetypePassword("")
+      setOldPassword("")
+      console.log(changePasswordResponse.data.updatedUser)
     } catch (error) {
       setError(error?.response?.data.error || "No Response From Server");
       console.error(error);
