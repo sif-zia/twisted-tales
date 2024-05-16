@@ -155,8 +155,8 @@ const NavBar = () => {
                                         sx={{ p: 0 }}
                                     >
                                         <Avatar
-                                            alt="Remy Sharp"
-                                            src="/static/images/avatar/2.jpg"
+                                            alt="User Profile"
+                                            src={`http://localhost:4000/getImage?imagePath=${crrUser.profileImgURL}`}
                                         />
                                     </IconButton>
                                 </Tooltip>

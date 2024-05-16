@@ -18,9 +18,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useState } from "react";
 import { useRef } from "react";
 import api from "../api/api"
-
-
 import { getCrrUser, loginUser } from "../slices/userSlice";
+import { useMediaQuery } from "@mui/material";
 
 const UpdateProfile = () => {
 
@@ -46,7 +45,14 @@ const UpdateProfile = () => {
       setBio(crrUser.bio)
       setEmail(crrUser.email)
     }
-  }, [crrUser])
+  }, [])
+
+  useEffect(() => {
+    setError(null)
+    setSuccess(null)
+  }, [name, bio, profilePic])
+
+
 
   useEffect(() => {
 
@@ -95,14 +101,14 @@ const UpdateProfile = () => {
 
 
     const userFormData = new FormData();
-    if( name!==crrUser.name){
+    if (name !== crrUser.name) {
       userFormData.append("name", name);
     }
-    if(bio!==crrUser.bio){
+    if (bio !== crrUser.bio) {
       userFormData.append("bio", bio);
     }
-    if(profilePic!==null){
-      userFormData.append("coverImg", profilePic);
+    if (profilePic !== null) {
+      userFormData.append("profileImg", profilePic);
     }
 
 
@@ -114,7 +120,7 @@ const UpdateProfile = () => {
       });
 
       dispatch(loginUser(userResponse.data.updatedUser))
-      if(userResponse.status == 200){
+      if (userResponse.status == 200) {
         setSuccess(true)
         setIsUpdate(false)
       }
@@ -125,7 +131,7 @@ const UpdateProfile = () => {
       setError(err.response.data.error)
     }
   };
-
+  const isDesktop = useMediaQuery("(min-width: 750px)");
 
 
   return (
@@ -155,71 +161,97 @@ const UpdateProfile = () => {
       >
         <Typography variant="h3">Update Profile</Typography>
         <form onSubmit={handleUpdateProfile}>
-          <Grid container justifyContent="center" spacing={2} marginTop={2}>
+          <Stack direction={isDesktop ? "row" : "column-reverse"} gap={5} marginTop={2}>
+            <Grid container justifyContent="center" spacing={2} >
 
-          {success && 
-          <Grid item xs = {12}> 
-          
-            <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-              Profile Updated Successfully!
-            </Alert>
-          </Grid>
-          }
+              {success &&
+                <Grid item xs={12}>
+
+                  <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                    Profile Updated Successfully!
+                  </Alert>
+                </Grid>
+              }
 
 
-            {error && <Grid item xs={12}>
-              <Alert severity="error">{error}</Alert>
-            </Grid>}
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth label="Name"
-                id="name"
-                value={name}
-                onChange={(e) => { setName(e.target.value) }} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                multiline
-                label="Email"
-                id="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value) }}
-                disabled
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                multiline
-                label="Bio"
-                id="bio"
-                value={bio}
-                onChange={(e) => { setBio(e.target.value) }}
-                rows={2}
-              />
-            </Grid>
-            {profilePic && <Grid item xs={12}>
-              <Stack direction="row" width="100%" spacing={2} justifyContent="space-between" alignItems="center">
+              {error && <Grid item xs={12}>
+                <Alert severity="error">{error}</Alert>
+              </Grid>}
+              <Grid item xs={12}>
                 <TextField
-                  id="cover-img"
-                  label="Upload Profile"
+                  variant="outlined"
+                  fullWidth label="Name"
+                  id="name"
+                  value={name}
+                  onChange={(e) => { setName(e.target.value) }} />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
                   fullWidth
-                  InputProps={{
-                    readOnly: true,
-                    style: { width: 'auto' },
-                    inputProps: {
-                      style: { width: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-                    },
-                  }}
-                  value={profilePic.name} />
-                <Box height="100%">
-                  <FormControl>
+                  multiline
+                  label="Email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value) }}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  multiline
+                  label="Bio"
+                  id="bio"
+                  value={bio}
+                  onChange={(e) => { setBio(e.target.value) }}
+                  rows={2}
+                />
+              </Grid>
+              {profilePic && <Grid item xs={12}>
+                <Stack direction="row" width="100%" spacing={2} justifyContent="space-between" alignItems="center">
+                  <TextField
+                    id="cover-img"
+                    label="Upload Profile"
+                    fullWidth
+                    InputProps={{
+                      readOnly: true,
+                      style: { width: 'auto' },
+                      inputProps: {
+                        style: { width: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+                      },
+                    }}
+                    value={profilePic.name} />
+                  <Box height="100%">
+                    <FormControl>
+                      <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
+                        Reselect
+                      </InputLabel>
+                      <Input
+                        id="upload-file"
+                        type="file"
+                        inputRef={profilePicRef}
+                        onChange={handleProfilePicChange}
+                        style={{ display: "none" }}
+                      />
+                      <Button
+                        onClick={handleProfilePicUpload}
+                        variant="contained"
+                        component="span"
+                        height="100%"
+                      >
+                        Reselect
+                      </Button>
+                    </FormControl>
+                  </Box>
+                </Stack>
+              </Grid>}
+              <Grid item xs={12}>
+                <Stack direction="row" width="100%" justifyContent="space-between" gap={2}>
+                  {!profilePic && <FormControl>
                     <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
-                      Reselect
+                      Upload Profile Picture
                     </InputLabel>
                     <Input
                       id="upload-file"
@@ -231,46 +263,24 @@ const UpdateProfile = () => {
                     <Button
                       onClick={handleProfilePicUpload}
                       variant="contained"
-                      component="span"
-                      height="100%"
                     >
-                      Reselect
+                      Upload Profile Picture
                     </Button>
-                  </FormControl>
-                </Box>
-              </Stack>
-            </Grid>}
-            <Grid item xs={12}>
-              <Stack direction="row" width="100%" justifyContent="space-between" gap={2}>
-                {!profilePic && <FormControl>
-                  <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
-                    Upload Profile Picture
-                  </InputLabel>
-                  <Input
-                    id="upload-file"
-                    type="file"
-                    inputRef={profilePicRef}
-                    onChange={handleProfilePicChange}
-                    style={{ display: "none" }}
-                  />
+                  </FormControl>}
                   <Button
-                    onClick={handleProfilePicUpload}
+                    type="submit"
                     variant="contained"
+                    color="primary"
+                    disabled={!isUpdate}
                   >
-                    Upload Profile Picture
+                    Update Profile
                   </Button>
-                </FormControl>}
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={!isUpdate}
-                >
-                  Update Profile
-                </Button>
-              </Stack>
+                </Stack>
+              </Grid>
             </Grid>
-          </Grid>
+            <img src={`http://localhost:4000/getImage?imagePath=${crrUser.profileImgURL}`} style={{ width: "300px", maxHeight: "300px", borderRadius: "50px" }} alt="User Profile"></img>
+          </Stack>
+
         </form>
       </Box>
     </div>

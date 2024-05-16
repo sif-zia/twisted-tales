@@ -5,8 +5,8 @@ const verifyToken = require("../middlewares/verifyToken");
 
 const router = express.Router();
 
-router.put("/updatePassword/:id", updatePassword);
-router.put("/updateProfile/:id", updateProfile);
+router.put("/updatePassword/:id",verifyToken, updatePassword);
+router.put("/updateProfile/:id",verifyToken, updateProfile);
 router.get("/crr", verifyToken, getCrrUser);
 router.get("/logout", verifyToken, logoutUser);
 router.post("/login", loginUser);

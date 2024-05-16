@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Logo from "../components/Logo";
+import axios from "axios"
+import { Grid } from '@mui/material';
+
 
 const Layout = () => {
   // #F2F2DE
- 
+  const currentDate = new Date();
+  const options = { month: 'long', day: 'numeric', year: 'numeric' };
+  const formattedDate = currentDate.toLocaleDateString('en-US', options);
 
- 
+  const [quote, setQuote] = useState('');
+  const maxLength = 100;
+  useEffect(() => {
+    const fetchQuote = async () => {
+      try {
+        let data;
+        let fetchedQuote = '';
+        while (fetchedQuote.length >= maxLength || fetchedQuote.length === 0) {
+          const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent('https://favqs.com/api/qotd'));
+          data = await JSON.parse(response.data.contents);
+          fetchedQuote = data.quote.body;
+        }
+        setQuote(fetchedQuote);
+      } catch (err) {
+        console.error('There was a problem fetching the quote of the day:', err);
+      }
+    };
+
+    fetchQuote();
+  }, []);
+
+
+
   return (
     <div>
       <section>
-        <div className="topbar-1 d-lg-flex d-none">
-          <div className="container d-flex justify-content-between align-items-center">
-            <div className="date">
-              Novembar 30, 2022 <span>28°C</span>
-            </div>
-            <div className="header-logo">
-              <a href="index-2.html">
-                <Logo/>
-              </a>
-            </div>
+        <Grid container width="100%" className="topbar-1">
+          <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-start", alignItems: "center" }}>
+            <p className="date" style={{ paddingLeft: "10px", fontSize: "1rem", paddingBottom: "0px", marginBottom: "0px" }}>
+              {formattedDate}
+            </p></Grid>
+          <Grid item xs={6} style={{ display: "flex", direction: "column", justifyContent: "center", alignItems: "center" }} ><Logo /></Grid>
+          <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-end", alignItems: "center" }}> <p style={{ color: "#f5f8fc", paddingBottom: "0px", marginBottom: "0px", paddingRight: "10px" }} > {quote ? quote :
             <ul className="social-1">
               <li>
                 <a href="https://www.facebook.com/">
@@ -43,9 +67,9 @@ const Layout = () => {
                 </a>
               </li>
             </ul>
-          </div>
-        </div>
-        <NavBar/>
+          }</p></Grid>
+        </Grid>
+        <NavBar />
 
       </section>
       <main style={{ backgroundColor: "#FAF9F6" }}>

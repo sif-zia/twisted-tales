@@ -32,7 +32,7 @@ const AddStory = () => {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  const genres = ["Genre","Drama", "Horror", "Thriller", "Suspense", "Comedy", "Fiction", "Sci-Fi", "Other"]
+  const genres = ["Genre", "Romance", "Drama", "Horror", "Thriller", "Suspense", "Comedy", "Fiction", "Sci-Fi", "Other"]
   const [showIntro, setShowIntro] = useState(false)
   const storyCoverRef = useRef(null);
   const chapterCoverRef = useRef(null)
@@ -76,7 +76,7 @@ const AddStory = () => {
     e.preventDefault();
 
 
-    if (!title || !storyDesc || genre==="Genre" || type === "" || !storyCover || !chapterDesc || !chapterContent || !chapterCover) {
+    if (!title || !storyDesc || genre === "Genre" || type === "" || !storyCover || !chapterDesc || !chapterContent || !chapterCover) {
       setError("Please fill all the fields");
       return;
     }
@@ -94,7 +94,7 @@ const AddStory = () => {
     chapterFormData.append("coverImg", chapterCover);
     chapterFormData.append("isIntro", true);
 
-
+    let storyId = null;
     try {
       const storyResponse = await api.post("/story", storyFormData, {
         headers: {
@@ -102,6 +102,7 @@ const AddStory = () => {
         },
       });
 
+      storyId = storyResponse.data.story._id
       const chapterResponse = await api.post(`/story/${storyResponse.data.story._id}/chapter`, chapterFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -115,6 +116,9 @@ const AddStory = () => {
     } catch (err) {
       console.log(err.response.data.error)
       setError(err.response.data.error)
+      if (storyId) {
+        const deleteStoryResponse = await api.delete(`/story/${storyId}`)
+      }
     }
   };
 
@@ -136,11 +140,11 @@ const AddStory = () => {
       <Box
         sx={{
           margin: {
-            xs: "50px 3vw 0 3vw", 
-            sm: "50px 5vw 0 5vw", 
-            md: "50px 10vw 0 10vw", 
+            xs: "50px 3vw 0 3vw",
+            sm: "50px 5vw 0 5vw",
+            md: "50px 10vw 0 10vw",
             lg: "50px 15vw 0 15vw",
-            xl: "50px 16.25vw 0 16.25vw", 
+            xl: "50px 16.25vw 0 16.25vw",
           },
         }}
         minHeight="65vh"

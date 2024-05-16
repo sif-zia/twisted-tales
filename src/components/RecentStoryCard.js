@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const RecentStoryCard = ( {storyName, genre, author, imageURL} ) => {
+const RecentStoryCard = ({ id, storyName, genre, authorId,author, imageURL }) => {
+  const navigate = useNavigate()
   return (
     <div class="col-md-6 col-sm-6">
       <div class="blog-grid-1 two">
@@ -10,21 +12,22 @@ const RecentStoryCard = ( {storyName, genre, author, imageURL} ) => {
         <div class="content">
           <ul>
             <li>
-              <a href="author-details.html">By {author}</a>
+              <a href={`/userDetails/${authorId}`}>By {author}</a>
             </li>
             <li>
               <a href="blog-classic.html">{genre}</a>
             </li>
           </ul>
           <h4>
-            <a href="post-format-no-sidebar-02.html">
+            <a href={`/story/${id}`}>
               {storyName}
             </a>
           </h4>
           <div class="bottom-area">
             <a
-              href="post-format-no-sidebar-02.html"
+              href={`/story/${id}`}
               class="eg-btn arrow-btn"
+              // onClick={() => { navigate(`/story/${id}`) }}
             >
               Read Now<i class="bi bi-arrow-right"></i>
             </a>

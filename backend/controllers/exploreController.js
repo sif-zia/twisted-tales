@@ -27,6 +27,20 @@ const getLikesForStory = async (storyId) => {
     }
 };
 
+const getReadCountForStory = async (story) => {
+    try {
+
+        let totalReadCount = 0;
+        for (const chapter of story.chapters) {
+            const chapterData = await Chapter.findById(chapter);
+            totalReadCount += chapterData.readBy.length;
+        }
+        return totalReadCount;
+    } catch (error) {
+        console.log('Error fetching read count:', error);
+    }
+};
+
 const getTrendingStories = async (req, res) => {
     try {
         const stories = await Story.find(); // Find all stories
@@ -90,7 +104,7 @@ const getGenreCover = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ error: err.message });
     }
 };
 
@@ -115,7 +129,7 @@ const getGenres = async (req, res) => {
 
         res.status(200).json({ genres });
     } catch (err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ error: err.message });
     }
 };
 
@@ -135,6 +149,7 @@ const getUserLikedAndReadStoryGenres = async (userId) => {
 
         const genres = [...new Set(stories.map(story => story.genre))];
 
+
         return genres;
     } catch (err) {
         console.error(err);
@@ -146,15 +161,15 @@ const getTopPicks = async (req, res) => {
     try {
 
         const userGenres = await getUserLikedAndReadStoryGenres(req.user.id)
+        console.log(userGenres)
         const user = await User.findById(req.user.id)
 
 
-        const topPicks = await Story.find({ genre: { $in: userGenres }, _id: { $nin: user.initiatedStories } }).sort({ createdAt: -1 }).limit(10);
-
+        const topPicks = await Story.find({ genre: { $in: userGenres }, _id: { $nin: user.initiatedStories } }).sort({ createdAt: -1 }).limit(10).populate('initiator');
         res.status(200).json({ topPicks: topPicks })
     }
     catch (err) {
-        res.status(400).json({ error: err })
+        res.status(400).json({ error: err.message })
     }
 }
 
@@ -196,40 +211,41 @@ const getWriterOfTheMonth = async (req, res) => {
             res.status(404).json({ message: "No writers found" });
         }
     } catch (err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ error: err.message });
     }
 };
 
-const getBestSeller = async (req, res) => {
+
+
+const getTopThree = async (req, res) => {
     try {
+        const stories = await Story.find({}).populate('initiator')
+        const readCount = []
+        const likeCount = []
 
-        const bestSellers = []
-        const mostBoughtStories = await Story.aggregate([
-            {
-                $addFields: {
-                    boughtByCount: { $size: "$boughtBy" }
-                }
-            },
-            {
-                $sort: { "boughtByCount": -1 }
-            }
-        ]).populate('chapters');
 
-        for (const story of mostBoughtStories) {
-            let reads = 0
-            for (const chapter of story.chapters) {
-                reads += chapter.readBy.length
-            }
-            bestSellers.push({ story: story, reads: reads })
+
+        let i = 0;
+        for (story of stories) {
+            likeCount[i] = await getLikesForStory(story._id)
+            readCount[i] = await getReadCountForStory(story)
+            i++;
         }
-        return res.status(200).json({ bestSellers: bestSellers })
+
+        let storiesWithLikeAndReadCount = stories.map((story, index) => ({ story: story, score: readCount[index] + likeCount[index], readCount: readCount[index] }))
+        storiesWithLikeAndReadCount.sort((a, b) => b.score - a.score);
+        storiesWithLikeAndReadCount = storiesWithLikeAndReadCount.slice(0, 3)
+
+        const topThreeStories = storiesWithLikeAndReadCount.map(story => ({ story: story.story, readCount: story.readCount }))
+        return res.status(200).json({ topThreeStories: topThreeStories })
+
     }
-    catch (error) {
-        return res.status(500).json({ error: error })
+    catch (err) {
+        return res.status(500).json({ error: err.message })
     }
 }
 
 
 
 
-module.exports = { getLatestStories, getTrendingStories, getGenres, getTopPicks, getWriterOfTheMonth, getGenreCover,getBestSeller };
+module.exports = { getLatestStories, getTrendingStories, getGenres, getTopPicks, getWriterOfTheMonth, getGenreCover, getTopThree };

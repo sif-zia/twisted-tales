@@ -89,7 +89,6 @@ function StoryRoadmap() {
 		try {
 			const response = await api.delete(`/story/${storyId}`);
 			setSuccess(response.data.message);
-			navigate('/');
 		} catch (error) {
 			setError(error.response.data.error);
 		}
@@ -186,7 +185,7 @@ function StoryRoadmap() {
 									<DialogActions>
 										<Button variant="outlined" onClick={handleCloseDialog} autoFocus >Cancel</Button>
 										{!success && !error && <Button variant="contained" onClick={handleDeleteStory} color="error"><strong>Delete</strong></Button>}
-										{success && <Button variant="contained" onClick={() => { navigate(`story/${storyId}`) }} color="error"><strong>Okay</strong></Button>}
+										{success && <Button variant="contained" onClick={() => { navigate("/") }} color="error"><strong>Okay</strong></Button>}
 										{error && <Button variant="contained" onClick={handleCloseDialog} color="error"><strong>Okay</strong></Button>}
 									</DialogActions>
 								</Dialog>

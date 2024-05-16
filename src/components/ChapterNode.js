@@ -46,7 +46,7 @@ const ChapterNode = ({ data }) => {
 							<Grid item xs={12} display="flex" justifyContent="center" alignItems="center" >
 								<Stack direction="row"   >
 									<Box style={{ borderRight: '2px solid #ddd', padding: "0px 5px" }}>
-										<Typography variant="subtitle1" color="#6b726e">{chapter?.author.name}</Typography>
+										<Typography variant="subtitle1" color="#6b726e">{chapter?.author?.name}</Typography>
 									</Box>
 									{/* <Divider orientation="vertical" variant="middle" flexItem sx={{height:"100%"}}/> */}
 									<Box style={{ paddingLeft: "5px" }}>

@@ -1,24 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
+import Logo from "../components/Logo";
+import axios from "axios"
+import { Grid } from '@mui/material';
+
 
 const VisitorLayout = () => {
+  // #F2F2DE
+  const currentDate = new Date();
+  const options = { month: 'long', day: 'numeric', year: 'numeric' };
+  const formattedDate = currentDate.toLocaleDateString('en-US', options);
+
+  const [quote, setQuote] = useState('');
+  const maxLength = 100;
+  useEffect(() => {
+    const fetchQuote = async () => {
+      try {
+        let data;
+        let fetchedQuote = '';
+        while (fetchedQuote.length >= maxLength || fetchedQuote.length === 0) {
+          const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent('https://favqs.com/api/qotd'));
+          data = await JSON.parse(response.data.contents);
+          fetchedQuote = data.quote.body;
+        }
+        setQuote(fetchedQuote);
+      } catch (err) {
+        console.error('There was a problem fetching the quote of the day:', err);
+      }
+    };
+
+    fetchQuote();
+  }, []);
+
+
+
   return (
-    <>
-      <header>
-        <div className="topbar-1 d-lg-flex d-none">
-          <div className="container d-flex justify-content-between align-items-center">
-            <div className="date">
-              Novembar 30, 2022 <span>28°C</span>
-            </div>
-            <div className="header-logo">
-              <a href="index-2.html">
-                <img
-                  alt="image"
-                  className="img-fluid"
-                  src="assets/images/logo/logo-1.svg"
-                />
-              </a>
-            </div>
+    <div>
+      <section>
+        <Grid container width="100%" className="topbar-1">
+          <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-start", alignItems: "center" }}>
+            <h4 className="date" style={{paddingLeft:"10px"}}>
+              {formattedDate}
+            </h4></Grid>
+          <Grid item xs={6} style={{ display: "flex", direction: "column", justifyContent: "center", alignItems: "center" }} ><Logo /></Grid>
+          <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-end", alignItems: "center" }}> <p style={{ color: "#f5f8fc",paddingBottom:"0px", marginBottom:"0px" ,paddingRight:"10px"}} > {quote ? quote :
             <ul className="social-1">
               <li>
                 <a href="https://www.facebook.com/">
@@ -41,15 +66,16 @@ const VisitorLayout = () => {
                 </a>
               </li>
             </ul>
-          </div>
-        </div>
-      </header>
-      <main>
+          }</p></Grid>
+        </Grid>
+
+      </section>
+      <main style={{ backgroundColor: "#FAF9F6" }}>
         <Outlet />
       </main>
       <footer className="style-1">
         <div className="container">
-          
+
           <div className="help-center d-flex justify-content-md-between justify-content-center align-items-center">
             <h5>
               <a href="contact.html">Help Center</a>
@@ -72,14 +98,14 @@ const VisitorLayout = () => {
           <div className="row copyright-area">
             <div className="col-lg-12 text-center">
               <p>
-                © 2023 Blogxton is Proudly Powered by
-                <a href="https://www.egenstheme.com/">Egens Theme</a>
+                © 2023 Twisted Tales is Proudly Powered by
+                <a href="https://www.egenstheme.com/"> WebWizards</a>
               </p>
             </div>
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
 
