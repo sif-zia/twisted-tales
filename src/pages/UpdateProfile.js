@@ -141,7 +141,7 @@ const UpdateProfile = () => {
         <div className="container">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><a href="index-2.html">Account</a></li>
+              <li className="breadcrumb-item"><a href="#">Account</a></li>
               <li className="breadcrumb-item active" aria-current="page">Update User Profile</li>
             </ol>
           </nav>

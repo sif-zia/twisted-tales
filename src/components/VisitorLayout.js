@@ -78,7 +78,7 @@ const VisitorLayout = () => {
 
           <div className="help-center d-flex justify-content-md-between justify-content-center align-items-center">
             <h5>
-              <a href="contact.html">Help Center</a>
+              <a href="#">Help Center</a>
             </h5>
             <ul className="help-list">
               <li>
@@ -91,7 +91,7 @@ const VisitorLayout = () => {
                 <a href="#">Services</a>
               </li>
               <li>
-                <a href="contact.html">Help</a>
+                <a href="#">Help</a>
               </li>
             </ul>
           </div>

@@ -6,7 +6,7 @@ const RecentStoryCard = ({ id, storyName, genre, authorId,author, imageURL }) =>
   return (
     <div class="col-md-6 col-sm-6">
       <div class="blog-grid-1 two">
-        <a href="post-format-no-sidebar-02.html" class="image">
+        <a href="#" class="image">
           <img src={imageURL} alt={storyName + " image"} />
         </a>
         <div class="content">
@@ -15,7 +15,7 @@ const RecentStoryCard = ({ id, storyName, genre, authorId,author, imageURL }) =>
               <a href={`/userDetails/${authorId}`}>By {author}</a>
             </li>
             <li>
-              <a href="blog-classic.html">{genre}</a>
+              <a href="#">{genre}</a>
             </li>
           </ul>
           <h4>

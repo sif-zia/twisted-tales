@@ -30,10 +30,10 @@ const BestSellers = ({ stories }) => {
         <div className="row justify-content-center gy-5">
           <div className="col-lg-4 col-md-6 col-sm-10">
             <div className="blog-grid-1">
-              <a href="blog-classic.html" className="eg-badge badge--white">
+              <a href="#" className="eg-badge badge--white">
                 {stories[0].story.genre}
               </a>
-              <a href="post-format-no-sidebar-02.html" className="image">
+              <a href="#" className="image">
                 <img src={`http://localhost:4000/getImage?imagePath=${stories[0].story.coverImgURL}`} alt="image" />
               </a>
               <div className="content">
@@ -45,12 +45,12 @@ const BestSellers = ({ stories }) => {
                     </a>
                   </li>
                   <li>
-                    <a href="blog-standard.html">{getFormattedDate(stories[0].story.createdAt, "MMMM do, yyyy")}</a>
+                    <a href="#">{getFormattedDate(stories[0].story.createdAt, "MMMM do, yyyy")}</a>
                   </li>
                   <li>{stories[0].readCount} Reads</li>
                 </ul>
                 <h4>
-                  <a href="post-format-no-sidebar-02.html">
+                  <a href="#">
                     {stories[0].story.title}
                   </a>
                 </h4>
@@ -79,7 +79,7 @@ const BestSellers = ({ stories }) => {
           <div className="col-lg-4 col-md-6 col-sm-10">
             <div className="blog-grid-1 sibling-2">
               <div className="content">
-                <a href="blog-classic.html" className="eg-badge badge--red">
+                <a href="#" className="eg-badge badge--red">
                   {stories[1].story.genre}
                 </a>
                 <ul>
@@ -90,12 +90,12 @@ const BestSellers = ({ stories }) => {
                     </a>
                   </li>
                   <li>
-                    <a href="blog-standard.html">{getFormattedDate(stories[1].story.createdAt, "MMMM do, yyyy")}</a>
+                    <a href="#">{getFormattedDate(stories[1].story.createdAt, "MMMM do, yyyy")}</a>
                   </li>
                   <li>{stories[1].readCount} Reads</li>
                 </ul>
                 <h4>
-                  <a href="post-format-no-sidebar-02.html">
+                  <a href="#">
                     {stories[1].story.title}
                   </a>
                 </h4>
@@ -119,17 +119,17 @@ const BestSellers = ({ stories }) => {
                   </span> */}
                 </div>
               </div>
-              <a href="post-format-no-sidebar-02.html" className="image">
+              <a href="#" className="image">
                 <img src={`http://localhost:4000/getImage?imagePath=${stories[1].story.coverImgURL}`} alt="image" />
               </a>
             </div>
           </div>
           <div className="col-lg-4 col-md-6 col-sm-10">
             <div className="blog-grid-1">
-              <a href="blog-classic.html" className="eg-badge badge--white">
+              <a href="#" className="eg-badge badge--white">
                 {stories[2].story.genre}
               </a>
-              <a href="post-format-no-sidebar-02.html" className="image">
+              <a href="#" className="image">
                 <img src={`http://localhost:4000/getImage?imagePath=${stories[2].story.coverImgURL}`} alt="image" />
               </a>
               <div className="content">
@@ -141,12 +141,12 @@ const BestSellers = ({ stories }) => {
                     </a>
                   </li>
                   <li>
-                    <a href="blog-standard.html">{stories[2].story.uploadDate}</a>
+                    <a href="#">{stories[2].story.uploadDate}</a>
                   </li>
                   <li>{stories[2].readCount} Reads</li>
                 </ul>
                 <h4>
-                  <a href="post-format-no-sidebar-02.html">
+                  <a href="#">
                     {stories[2].story.title}
                   </a>
                 </h4>

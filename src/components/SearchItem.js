@@ -30,7 +30,7 @@ const SearchItem = ({storyName, date, genre, coverImgURL, isStory, storyId, chap
         <ul>
           
           <li>
-            <a href="blog-classic.html">{genre}</a>
+            <a href="#">{genre}</a>
           </li>
         </ul>
         <h4>

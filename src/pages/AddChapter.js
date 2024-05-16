@@ -157,7 +157,7 @@ const AddChapter = () => {
                 <div className="container">
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item"><a href="index-2.html">{story?.title}</a></li>
+                            <li className="breadcrumb-item"><a href="#">{story?.title}</a></li>
                             <li className="breadcrumb-item active" aria-current="page">Add Chapter</li>
                         </ol>
                     </nav>

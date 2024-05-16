@@ -5,9 +5,9 @@ const AuthorOfTheMonth = ({ writerOfTheMonth }) => {
     <div class="swiper-slide">
       <div class="author-2">
         <div class="image-area">
-          <a href="author-details.html">
+          <div>
             <img src={`http://localhost:4000/getImage?imagePath=${writerOfTheMonth.profileImgURL}`} />
-          </a>
+          </div>
           <div class="social-area">
             <ul>
               <li>
