@@ -13,36 +13,34 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Stack } from "@mui/material";
+
 import Sidebar from "./Sidebar";
 import { useSelector } from "react-redux";
 import { getPage } from "../slices/navbarSlice";
 import { logoutUser } from "../slices/userSlice";
 import { useNavigate } from "react-router-dom";
-import { getLoginStatus } from "../slices/userSlice";
+import { getLoginStatus, getCrrUser } from "../slices/userSlice";
 import { useDispatch } from "react-redux";
+
 import api from "../api/api";
 
-const NavBar = () => {
-    const pages = ["Explore", "Search", "Add Story"];
-    const links = ["/", "/search", "/addStory"];
-    const settings = ["Profile", "Account", "Dashboard", "Logout"];
-    const [isOpen, setOpen] = React.useState(false);
 
+const NavBar = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const crrUser = useSelector(getCrrUser);
 
-    const crrPage = useSelector(getPage);
-    const isLoggedIn = useSelector(getLoginStatus);
+    const pages = ["Explore", "Search", "Add Story"];
+    const links = ["/", "/search", "/addStory"];
 
-    const navigate = useNavigate();
+    const settings = ["View Profile", "Update Profile", "Change Password", "Logout"];
+    const handleSettingsFunctions = [];
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleLogout = async (e) => {
+    handleSettingsFunctions.push(() => navigate(`/userDetails/${crrUser._id}`));
+    handleSettingsFunctions.push(() => navigate("/updateProfile"));
+    handleSettingsFunctions.push(() => navigate("/changePassword"));
+    handleSettingsFunctions.push(async () => {
         try {
             const res = await api.get("/user/logout");
             if (res.status === 200) {
@@ -53,6 +51,19 @@ const NavBar = () => {
         catch (error) {
             console.error(error);
         }
+    });
+
+    const [isOpen, setOpen] = React.useState(false);
+
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const crrPage = useSelector(getPage);
+    const isLoggedIn = useSelector(getLoginStatus);
+
+
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
     };
 
     const handleCloseNavMenu = () => {
@@ -135,63 +146,48 @@ const NavBar = () => {
                             ))}
                         </Stack>
 
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton
-                                    onClick={handleOpenUserMenu}
-                                    sx={{ p: 0 }}
+
+                        {isLoggedIn &&
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open settings">
+                                    <IconButton
+                                        onClick={handleOpenUserMenu}
+                                        sx={{ p: 0 }}
+                                    >
+                                        <Avatar
+                                            alt="Remy Sharp"
+                                            src="/static/images/avatar/2.jpg"
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: "45px" }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
                                 >
-                                    <Avatar
-                                        alt="Remy Sharp"
-                                        src="/static/images/avatar/2.jpg"
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: "45px" }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: "top",
-                                    horizontal: "right",
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: "top",
-                                    horizontal: "right",
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                {settings.map((setting) => {
-                                    if (setting !== "Logout") {
-                                        return (
-                                            <MenuItem
-                                                key={setting}
-                                                onClick={handleCloseUserMenu}
-                                            >
-                                                <Typography textAlign="center">
-                                                    {setting}
-                                                </Typography>
-                                            </MenuItem>
-                                        );
-                                    }
-                                    else if (setting === "Logout" && isLoggedIn) {
-                                        return (
-                                            <MenuItem
-                                                key={setting}
-                                                onClick={handleLogout}
-                                            >
-                                                <Typography textAlign="center">
-                                                    {setting}
-                                                </Typography>
-                                            </MenuItem>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                            </Menu>
-                        </Box>
+                                    {settings.map((setting, index) => (
+                                        <MenuItem
+                                            key={setting}
+                                            onClick={handleSettingsFunctions[index]}>
+                                            <Typography textAlign="center">
+                                                {setting}
+                                            </Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Box>
+                        }
                     </Toolbar>
                 </Container>
             </AppBar>

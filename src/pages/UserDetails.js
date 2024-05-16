@@ -140,7 +140,7 @@ const UserDetails = () => {
                       <SearchItem
                         storyName={chapter.title}
                         date={chapter.createdAt}
-                        genre={chapter.story.genre}
+                        genre={chapter.story?.genre}
                         coverImgURL={chapter.coverImgURL}
                         isStory={false}
                         storyId = {chapter.story._id}

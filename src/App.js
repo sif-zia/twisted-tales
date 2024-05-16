@@ -1,5 +1,6 @@
+import { useDispatch } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   createTheme,
   ThemeProvider,
@@ -8,6 +9,8 @@ import {
 
 import Layout from "./components/Layout";
 import VisitorLayout from "./components/VisitorLayout";
+
+import api from "./api/api";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -19,6 +22,10 @@ import AddStory from "./pages/AddStory";
 import UserDetails from "./pages/UserDetails";
 import PrivateRoute from "./components/PrivateRoute";
 import StoryRoadmap from "./pages/StoryRoadmap";
+import { Stack } from "@mui/system";
+import { CircularProgress } from "@mui/material";
+
+import { loginUser } from "./slices/userSlice";
 
 function App() {
   // useEffect(() => {
@@ -57,6 +64,28 @@ function App() {
   //     });
   //   };
   // }, []);
+  const dispatch = useDispatch()
+
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+
+    const sendLoginRequest = async () => {
+      try {
+        const response = await api.get("/user/crr")
+        const crrUser = response.data.user
+        setUser(crrUser)
+        dispatch(loginUser(crrUser))
+        console.log("Crr User", crrUser)
+        console.log("User", user)
+      }
+      catch (err) {
+        console.log(err)
+        setUser("User not Found")
+      }
+    }
+
+    sendLoginRequest()
+  }, [])
 
   const theme = createTheme({
     typography: {
@@ -99,25 +128,32 @@ function App() {
   const responsiveTheme = responsiveFontSizes(theme);
 
   return (
-    <ThemeProvider theme={responsiveTheme}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route exact path="/" element={<Explore />} />
-          <Route path="/story/:storyId/chapter/:chapterId" element={<PrivateRoute><Chapter /></PrivateRoute>} />
-          <Route path="search" element={<PrivateRoute><Search /></PrivateRoute>} />
-          <Route path="addStory" element={<PrivateRoute><AddStory /></PrivateRoute>} />
-          <Route path="userDetails/:userId" element={<PrivateRoute><UserDetails /></PrivateRoute>} />
-          <Route path="/story/:storyId/addChapter" element={<PrivateRoute><AddChapter /></PrivateRoute>} />
-          <Route path="/story/:storyId" element={<PrivateRoute><StoryRoadmap /></PrivateRoute>} />
-        </Route>
-        <Route path="/login" element={<VisitorLayout />}>
-          <Route index element={<Login />} />
-        </Route>
-        <Route path="/register" element={<VisitorLayout />}>
-          <Route index element={<Register />} />
-        </Route>
-      </Routes>
-    </ThemeProvider>
+    <>
+      {user === null ?
+        <Stack sx={{ width: "100%", height: "90vh", justifyContent: "center", alignItems: "center" }}>
+          <CircularProgress sx={{ color: "red", width: "75px" }} />
+        </Stack> :
+        <ThemeProvider theme={responsiveTheme}>
+          < Routes >
+            <Route path="/" element={<Layout />}>
+              <Route exact path="/" element={<Explore />} />
+              <Route path="story/:storyId/chapter/:chapterId" element={<PrivateRoute><Chapter /></PrivateRoute>} />
+              <Route path="search" element={<PrivateRoute><Search /></PrivateRoute>} />
+              <Route path="addStory" element={<PrivateRoute><AddStory /></PrivateRoute>} />
+              <Route path="userDetails/:userId" element={<PrivateRoute><UserDetails /></PrivateRoute>} />
+              <Route path="story/:storyId/addChapter" element={<PrivateRoute><AddChapter /></PrivateRoute>} />
+              <Route path="story/:storyId" element={<PrivateRoute><StoryRoadmap /></PrivateRoute>} />
+            </Route>
+            <Route path="/login" element={<VisitorLayout />}>
+              <Route index element={<Login />} />
+            </Route>
+            <Route path="/register" element={<VisitorLayout />}>
+              <Route index element={<Register />} />
+            </Route>
+          </Routes >
+        </ThemeProvider >
+      }
+    </>
   );
 }
 
