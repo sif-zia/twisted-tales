@@ -16,6 +16,7 @@ const UserDetails = () => {
       try {
         const responseAuthor = await api.get(`user/${userId}`);
         const user = responseAuthor.data;
+        console.log("in userDetails:", user);
         setAuthor(user);
       } catch (err) {
         console.log(err);
@@ -68,87 +69,103 @@ const UserDetails = () => {
                   <h2>{author?.user.name}</h2>
                   <p>{author?.user.email}</p>
 
-                  <ul style={{ listStyleType: "none", padding: 0, margin: 0 , display:"flex", direction:"row" , width:"50vw" ,justifyContent:"space-between"}} >
+                  <ul
+                    style={{
+                      listStyleType: "none",
+                      padding: 0,
+                      margin: 0,
+                      display: "flex",
+                      direction: "row",
+                      width: "50vw",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <li>
                       <img
                         src={`${process.env.PUBLIC_URL}/assets/images/icons/total-post.svg`}
                         alt="image"
-                      />
-                        {" "}Initiated Plots:{" "}
-                      <b style={{color:"black"}}>{author?.user.initiatedStories.length}</b>
+                      />{" "}
+                      Initiated Plots:{" "}
+                      <b style={{ color: "black" }}>
+                        {author?.user.initiatedStories.length}
+                      </b>
                     </li>
                     <li>
                       <img
                         src={`${process.env.PUBLIC_URL}/assets/images/icons/view.svg`}
                         alt="image"
-                      />
-                       {" "}Composed Chapters:{" "}
-                      <b style={{color:"black"}}>{author?.user.writtenChapters.length}</b>
+                      />{" "}
+                      Composed Chapters:{" "}
+                      <b style={{ color: "black" }}>
+                        {author?.user.writtenChapters.length}
+                      </b>
                     </li>
                     <li>
                       <img
                         src={`${process.env.PUBLIC_URL}/assets/images/icons/like.svg`}
                         alt="image"
-                      />
-                        {" "}Likes: <b style={{color:"black"}}>{author?.likes}</b>
+                      />{" "}
+                      Likes: <b style={{ color: "black" }}>{author?.likes}</b>
                     </li>
                   </ul>
-                 
                 </div>
               </div>
             </div>
 
             <div className="col-lg-12">
-              <Stack
-                direction="row"
-                justifyContent={"space-evenly"}
-              >   
-              </Stack>
+              <Stack direction="row" justifyContent={"space-evenly"}></Stack>
               <Grid
                 container
                 direction={isDesktop ? "row" : "column"}
                 spacing={2}
                 display={"flex"}
-                justifyContent={"start"}
-                alignItems={isDesktop? "start" : "center"}
+                // justifyContent={"start"}
+                // alignItems={isDesktop ? "start" : "center"}
+                style={author?.user.initiatedStories.length === 0 || author?.user.writtenChapters.length === 0  ? { justifyContent: isDesktop? "center" : "start" , alignItems: isDesktop? "start" : "center" } : {}}
+
               >
-                <Grid item xs={6}>
-                    
-                <Typography variant="h1" align="center"  sx={{ my: "25px" }}>
-                  Initiated Plots
-                </Typography>
-                  <Stack direction="column" spacing={2}>
-                    {author?.user.initiatedStories.map((story) => (
-                      <SearchItem
-                        storyName={story.title}
-                        date={story.createdAt}
-                        genre={story.genre}
-                        coverImgURL={story.coverImgURL}
-                        isStory={true}
-                        storyId = {story._id}
-                        chapterId = {" "}
-                      />
-                    ))}
-                  </Stack>
-                </Grid>
-                <Grid item xs={6}>
-                <Typography variant="h1" align="center"  sx={{ my: "25px" }}>
-                  Composed Chapters
-                </Typography>
-                  <Stack direction="column" spacing={2}>
-                    {author?.user.writtenChapters.map((chapter) => (
-                      <SearchItem
-                        storyName={chapter.title}
-                        date={chapter.createdAt}
-                        genre={chapter.story?.genre}
-                        coverImgURL={chapter.coverImgURL}
-                        isStory={false}
-                        storyId = {chapter.story._id}
-                        chapterId = {chapter._id}
-                      />
-                    ))}
-                  </Stack>
-                </Grid>
+                {author?.user.initiatedStories.length !== 0 && (
+                  <Grid item xs={6}>
+                    <Typography variant="h1" align="center" sx={{ my: "25px" }}>
+                      Initiated Plots
+                    </Typography>
+                    <Stack direction="column" spacing={2}>
+                      {author?.user.initiatedStories?.map((story, index) => (
+                        <SearchItem
+                          key={index}
+                          storyName={story.title}
+                          date={story.createdAt}
+                          genre={story.genre}
+                          coverImgURL={story.coverImgURL}
+                          isStory={true}
+                          storyId={story._id}
+                          chapterId={" "}
+                        />
+                      ))}
+                    </Stack>
+                  </Grid>
+                )}
+                {author?.user.writtenChapters.length !== 0 && (
+                  <Grid item xs={6} >
+                  <Typography variant="h1" align="center" sx={{ my: "25px" }}>
+                      Composed Chapters
+                    </Typography>
+                    <Stack direction="column" spacing={2}>
+                      {author?.user.writtenChapters?.map((chapter, index) => (
+                        <SearchItem
+                          key={index}
+                          storyName={chapter.title}
+                          date={chapter.createdAt}
+                          genre={chapter.story?.genre}
+                          coverImgURL={chapter.coverImgURL}
+                          isStory={false}
+                          storyId={chapter.story._id}
+                          chapterId={chapter._id}
+                        />
+                      ))}
+                    </Stack>
+                  </Grid>
+                )}
               </Grid>
             </div>
           </div>
