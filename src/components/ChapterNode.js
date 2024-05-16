@@ -57,7 +57,7 @@ const ChapterNode = ({ data }) => {
 						</Grid>
 					</CardContent>
 					<CardActions>
-						<Stack direction="row"   >
+						<Stack direction="row"   width="100%" justifyContent="space-evenly">
 							<Button variant="contained" color="primary" sx={{ marginX: "10px", marginBottom: "5px" }} onClick={handleGoToRead}>Read</Button>
 							<Divider orientation="vertical" variant="middle" flexItem sx={{ height: "100%" }} />
 							<Button variant="contained" color="primary" sx={{ marginX: "10px", marginBottom: "5px" }} onClick={handleAddSequel}>Add Sequel</Button>

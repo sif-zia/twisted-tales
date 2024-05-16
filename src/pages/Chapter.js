@@ -1,27 +1,35 @@
-import React from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import * as React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import SignpostIcon from "@mui/icons-material/Signpost";
 import { Stack } from "@mui/system";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
-import { Typography } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle'
 import api from "../api/api"
-import userSlice from "../slices/userSlice";
 import { format } from 'date-fns';
 import { useSelector } from "react-redux";
 import { getCrrUser } from "../slices/userSlice"
 import { useMediaQuery } from '@mui/material';
 
 
-
-
-
 const Chapter = () => {
+  const [openDialog, setOpenDialog] = useState(false);
+  const [success, setSuccess] = useState(null);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   // useEffect(() => {
   //   // Array of JavaScript file paths
@@ -57,6 +65,7 @@ const Chapter = () => {
   const [isLiked, setLiked] = useState(null)
   const crrUser = useSelector(getCrrUser)
 
+  const navigate = useNavigate()
 
   useEffect(() => {
     const sendChapterRequest = async () => {
@@ -74,17 +83,18 @@ const Chapter = () => {
     }
 
     sendChapterRequest()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     const getReaction = async () => {
       try {
         const response = await api.get(`/story/${storyId}/chapter/${chapterId}/react`)
-        if (response.status == 200) {
-          if (response.data.type == "like") {
+        if (response.status === 200) {
+          if (response.data.type === "like") {
             setLiked(true)
           }
-          else if (response.data.type == "dislike") {
+          else if (response.data.type === "dislike") {
             setLiked(false)
           }
         }
@@ -94,14 +104,15 @@ const Chapter = () => {
       }
     }
     getReaction()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleAddLike = async () => {
-    if (isLiked == false) {
+    if (isLiked === false) {
       await handleRemoveReaction()
     }
     try {
-      const response = await api.post(`/story/${storyId}/chapter/${chapterId}/react`, { type: "like" })
+      await api.post(`/story/${storyId}/chapter/${chapterId}/react`, { type: "like" })
       setLiked(true)
     }
     catch (err) {
@@ -111,11 +122,11 @@ const Chapter = () => {
 
   const handleAddDislike = async () => {
 
-    if (isLiked == true) {
+    if (isLiked === true) {
       await handleRemoveReaction()
     }
     try {
-      const response = await api.post(`/story/${storyId}/chapter/${chapterId}/react`, { type: "dislike" })
+      await api.post(`/story/${storyId}/chapter/${chapterId}/react`, { type: "dislike" })
       setLiked(false)
     }
     catch (err) {
@@ -125,7 +136,7 @@ const Chapter = () => {
 
   const handleRemoveReaction = async () => {
     try {
-      const response = await api.delete(`/story/${storyId}/chapter/${chapterId}/react`)
+      await api.delete(`/story/${storyId}/chapter/${chapterId}/react`)
       setLiked(null)
     }
     catch (err) {
@@ -141,7 +152,16 @@ const Chapter = () => {
     return formatted
   }
 
-
+  const handleDeleteChapter = async () => {
+    try {
+      await api.delete(`/story/${storyId}/chapter/${chapterId}`)
+      navigate(`/story/${storyId}`)
+    }
+    catch (err) {
+      console.log(err)
+      setError(err.response.data.error)
+    }
+  }
 
   return (
     <>
@@ -150,7 +170,10 @@ const Chapter = () => {
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="#">Story</a>
+                Story
+              </li>
+              <li className="breadcrumb-item">
+                {chapter?.story.title}
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 {chapter?.title}
@@ -174,7 +197,7 @@ const Chapter = () => {
                     <div className="post-thumb-img">
                       <img
                         src={`http://localhost:4000/getImage?imagePath=${chapter?.coverImgURL}`}
-                        alt
+                        alt="Chapter Cover"
                         style={{ width: "100%", height: "100%" }}
                       />
                       <div className="post-thumb-date">
@@ -199,13 +222,13 @@ const Chapter = () => {
                     <div className="author-sidebar-img">
                       <img
                         src={`${process.env.PUBLIC_URL}/assets/images/post-format/author-sidebar-img2.jpg`}
-                        alt
+                        alt="Author Profile Pic"
                       />
                     </div>
                     <div className="author-sidebar-content">
                       <div className="author-title">
                         <h5>
-                          <a onClick={()=>  window.location.href = `http://localhost:3000/userDetails/${chapter?.author._id}`}>{chapter?.author.name}</a>
+                          <a href={`/userDetails/${chapter?.author._id}`}>{chapter?.author.name}</a>
                         </h5>
                         <span>Creative</span>
                       </div>
@@ -303,9 +326,9 @@ const Chapter = () => {
 
               <div className="details-navigation">
                 <div className="single-navigation two">
-                  <a href="#" className="img">
+                  <a href={`/stroy/${chapter?.story}`} className="img">
                     <img src={`${process.env.PUBLIC_URL}/assets/images/roadmap.png`}
-                      alt />
+                      alt="roadmap button" />
                     <div className="arrow">
                       <svg
                         width="12"
@@ -323,6 +346,37 @@ const Chapter = () => {
                   </div>
                 </div>
               </div>
+
+              {(crrUser?._id === chapter?.author._id) && (chapter?.title !== "Introduction") &&
+              <React.Fragment>
+              <Button variant="outlined" onClick={handleOpenDialog} color="error">
+                Delete Chapter
+              </Button>
+              <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {"Delete " + chapter?.title + "?"}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    {!error && !success && "Are you sure you want delete this chapter?"}
+                    {error && error}
+                    {success && success}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button variant="outlined" onClick={handleCloseDialog} autoFocus >Cancel</Button>
+                  {!success && !error && <Button variant="contained" onClick={handleDeleteChapter} color="error"><strong>Delete</strong></Button>}
+                  {success && <Button variant="contained" onClick={() => {navigate(`story/${storyId}`)}} color="error"><strong>Okay</strong></Button>}
+                  {error && <Button variant="contained" onClick={handleCloseDialog} color="error"><strong>Okay</strong></Button>}
+                </DialogActions>
+              </Dialog>
+            </React.Fragment>
+              }
             </Stack>
           </div>
         </div>
