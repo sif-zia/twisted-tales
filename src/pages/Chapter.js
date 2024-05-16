@@ -31,33 +31,6 @@ const Chapter = () => {
     setOpenDialog(false);
   };
 
-  // useEffect(() => {
-  //   // Array of JavaScript file paths
-  //   const jsFiles = [
-  //     "https://unpkg.com/wavesurfer.js@7.7.2",
-  //     "%PUBLIC_URL%/assets/js/SmoothScroll.js",
-  //     "%PUBLIC_URL%/assets/js/waypoints.min.js",
-  //   ]; // Add your file paths here
-
-  //   // Load each JavaScript file
-  //   jsFiles.forEach((filePath) => {
-  //     const script = document.createElement("script");
-  //     script.src = filePath;
-  //     script.async = true;
-  //     document.body.appendChild(script);
-  //   });
-
-  //   // Cleanup function
-  //   return () => {
-  //     jsFiles.forEach((filePath) => {
-  //       const script = document.querySelector(`script[src="${filePath}"]`);
-  //       if (script) {
-  //         document.body.removeChild(script);
-  //       }
-  //     });
-  //   };
-  // }, []);
-
   const isSmallScreen = useMediaQuery('(max-width:992px)');
   const { storyId, chapterId } = useParams()
   const [chapter, setChapter] = useState(null)

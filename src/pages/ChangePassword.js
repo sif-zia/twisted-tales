@@ -58,32 +58,6 @@ const ChangePassword = () => {
 
   const crrUser = useSelector(getCrrUser);
 
-  // useEffect(() => {
-  //   // Array of JavaScript file paths
-  //   const jsFiles = [
-  //     "https://unpkg.com/wavesurfer.js@7.7.2",
-  //     "assets/js/masonry.pkgd.min.js",
-  //   ]; // Add your file paths here
-
-  //   // Load each JavaScript file
-  //   jsFiles.forEach((filePath) => {
-  //     const script = document.createElement("script");
-  //     script.src = filePath;
-  //     script.async = true;
-  //     document.body.appendChild(script);
-  //   });
-
-  //   // Cleanup function
-  //   return () => {
-  //     jsFiles.forEach((filePath) => {
-  //       const script = document.querySelector(`script[src="${filePath}"]`);
-  //       if (script) {
-  //         document.body.removeChild(script);
-  //       }
-  //     });
-  //   };
-  // }, []);
-
   const sendPasswordChangeRequest = async () => {
     try {
       await api.post(`/user/changePassword/${crrUser}`, {
