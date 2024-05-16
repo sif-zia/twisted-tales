@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {getLatestStories, getTrendingStories, getGenres, getTopPicks, getWriterOfTheMonth, getGenreCover,getBestSeller} = require("../controllers/exploreController")
+const { getLatestStories, getTrendingStories, getGenres, getTopPicks, getWriterOfTheMonth, getGenreCover, getTopThree } = require("../controllers/exploreController")
 
 const verifyToken = require("../middlewares/verifyToken");
 const router = express.Router();
@@ -11,7 +11,7 @@ router.get("/genres", getGenres)
 router.get("/topPicks", verifyToken, getTopPicks)
 router.get("/writerOfTheMonth", getWriterOfTheMonth)
 router.get("/getGenreCover", getGenreCover)
-router.get("/bestSellers",getBestSeller)
+router.get("/topThree", getTopThree)
 
 
 

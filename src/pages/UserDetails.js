@@ -1,4 +1,4 @@
-import { Button, Grid, Typography, useMediaQuery } from "@mui/material";
+import { Button, CircularProgress, Grid, Typography, useMediaQuery } from "@mui/material";
 import { Stack } from "@mui/system";
 import SearchItem from "../components/SearchItem";
 import { useDispatch } from "react-redux";
@@ -6,12 +6,16 @@ import { setPage } from "../slices/navbarSlice";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
 import { useEffect, useState } from "react";
+import Avatar from '@mui/material/Avatar';
+
 
 const UserDetails = () => {
   const { userId } = useParams();
   const [author, setAuthor] = useState(null);
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    setIsLoading(true)
     const sendAuthorRequest = async () => {
       try {
         const responseAuthor = await api.get(`user/${userId}`);
@@ -24,6 +28,7 @@ const UserDetails = () => {
     };
 
     sendAuthorRequest();
+    setIsLoading(false)
   }, []);
 
   const isDesktop = useMediaQuery("(min-width: 1500px)");
@@ -38,17 +43,27 @@ const UserDetails = () => {
   const dispatch = useDispatch();
   dispatch(setPage("user details"));
 
+  if (isLoading || author === null) {
+
+    return (
+      <Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress style={{ width: "75px" }} />
+      </Stack>
+    );
+  }
+
   return (
+
     <div className="tt-magic-cursor">
       <div className="breadcrumb-section">
         <div className="container">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="index-2.html">Home</a>
+                Account
               </li>
               <li className="breadcrumb-item active" aria-current="page">
-                Author Details
+                User Profile
               </li>
             </ol>
           </nav>
@@ -60,14 +75,23 @@ const UserDetails = () => {
           <div className="row gy-2">
             <div className="col-lg-12">
               <div className="author-details">
-                <img
-                  className="image"
-                  src={`${process.env.PUBLIC_URL}/assets/images/authors/author-details-img.jpg`}
-                  alt="image"
+                <Avatar
+                  alt={author?.user.name}
+                  src={`http://localhost:4000/getImage?imagePath=${author?.user.profileImgURL}`}
+                  sx={{ width: 150, height: 150 }}
                 />
+                {/* <img
+                  className="image"
+                  src={`http://localhost:4000/getImage?imagePath=${author?.user.profileImgURL}`}
+                  alt="image"
+                /> */}
                 <div className="author-info">
-                  <h2>{author?.user.name}</h2>
-                  <p>{author?.user.email}</p>
+                  <Stack direction="column" >
+                    <h2>{author?.user.name}</h2>
+                    <p style={{ marginBottom: "0px", paddingBottom: "0px" }}>{author?.user.email}</p>
+                    <p style={{ margin: "0px", padding: "0px" }}>{author?.user.bio}</p>
+
+                  </Stack>
 
                   <ul
                     style={{
@@ -121,7 +145,7 @@ const UserDetails = () => {
                 display={"flex"}
                 // justifyContent={"start"}
                 // alignItems={isDesktop ? "start" : "center"}
-                style={author?.user.initiatedStories.length === 0 || author?.user.writtenChapters.length === 0  ? { justifyContent: isDesktop? "center" : "start" , alignItems: isDesktop? "start" : "center" } : {}}
+                style={author?.user.initiatedStories.length === 0 || author?.user.writtenChapters.length === 0 ? { justifyContent: isDesktop ? "center" : "start", alignItems: isDesktop ? "start" : "center" } : {}}
 
               >
                 {author?.user.initiatedStories.length !== 0 && (
@@ -130,7 +154,7 @@ const UserDetails = () => {
                       Initiated Plots
                     </Typography>
                     <Stack direction="column" spacing={2}>
-                      {author?.user.initiatedStories?.map((story, index) => (
+                      {author?.user.initiatedStories.slice(0, 5).map((story, index) => (
                         <SearchItem
                           key={index}
                           storyName={story.title}
@@ -147,11 +171,11 @@ const UserDetails = () => {
                 )}
                 {author?.user.writtenChapters.length !== 0 && (
                   <Grid item xs={6} >
-                  <Typography variant="h1" align="center" sx={{ my: "25px" }}>
+                    <Typography variant="h1" align="center" sx={{ my: "25px" }}>
                       Composed Chapters
                     </Typography>
                     <Stack direction="column" spacing={2}>
-                      {author?.user.writtenChapters?.map((chapter, index) => (
+                      {author?.user.writtenChapters?.slice(0, 5).map((chapter, index) => (
                         <SearchItem
                           key={index}
                           storyName={chapter.title}

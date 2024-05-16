@@ -16,7 +16,7 @@ import api from "../api/api"
 import { format } from 'date-fns';
 import { useSelector } from "react-redux";
 import { getCrrUser } from "../slices/userSlice"
-import { useMediaQuery } from '@mui/material';
+import { useMediaQuery, CircularProgress } from '@mui/material';
 
 
 const Chapter = () => {
@@ -64,10 +64,13 @@ const Chapter = () => {
   const [error, setError] = useState(null)
   const [isLiked, setLiked] = useState(null)
   const crrUser = useSelector(getCrrUser)
+  const [isLoading, setIsLoading] = useState(true)
+
 
   const navigate = useNavigate()
 
   useEffect(() => {
+    setIsLoading(true)
     const sendChapterRequest = async () => {
       try {
         const response = await api.get(`/story/${storyId}/chapter/${chapterId}`)
@@ -77,16 +80,20 @@ const Chapter = () => {
         setChapter(prev => ({ ...prev, authorLikes: author.data.likes }))
       }
       catch (err) {
+        setChapter("Not Found")
         console.log(err)
         setError(err.response.data.error)
       }
     }
 
     sendChapterRequest()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setIsLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
+    setIsLoading(true)
+
     const getReaction = async () => {
       try {
         const response = await api.get(`/story/${storyId}/chapter/${chapterId}/react`)
@@ -104,7 +111,9 @@ const Chapter = () => {
       }
     }
     getReaction()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setIsLoading(false)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleAddLike = async () => {
@@ -155,7 +164,8 @@ const Chapter = () => {
   const handleDeleteChapter = async () => {
     try {
       await api.delete(`/story/${storyId}/chapter/${chapterId}`)
-      navigate(`/story/${storyId}`)
+      // navigate(`/story/${storyId}`)
+      setSuccess("Chapter Deleted Successfully")
     }
     catch (err) {
       console.log(err)
@@ -163,8 +173,17 @@ const Chapter = () => {
     }
   }
 
+  if (isLoading || chapter === null) {
+
+    return (
+      <Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress style={{ width: "75px" }} />
+      </Stack>
+    );
+  }
+
   return (
-    <>
+    <div>
       <div className="breadcrumb-section mb-100">
         <div className="container">
           <nav aria-label="breadcrumb">
@@ -192,7 +211,10 @@ const Chapter = () => {
                   <div className="post-thumb">
                     <div className="post-thumb-title">
                       <span>{chapter?.story.genre}</span>
-                      <h2>{chapter?.desc}</h2>
+                      <h2>{chapter?.title}</h2>
+                      <p className="second-para" style={{fontSize:"1.5rem"}}>
+                        {chapter?.desc.slice(0, 1).toUpperCase() + chapter?.desc.slice(1)}
+                      </p>
                     </div>
                     <div className="post-thumb-img">
                       <img
@@ -210,7 +232,8 @@ const Chapter = () => {
                   </div>
                   <div className="row justify-content-center">
                     <div className="col-lg-10">
-                      <p className="first-para">
+
+                      <p className="first-para" style={{ paddingTop: "10px" }} >
                         {chapter?.content.slice(0, 1).toUpperCase() + chapter?.content.slice(1)}
                       </p>
                     </div>
@@ -221,7 +244,7 @@ const Chapter = () => {
                   <div className="author-sidebar">
                     <div className="author-sidebar-img">
                       <img
-                        src={`${process.env.PUBLIC_URL}/assets/images/post-format/author-sidebar-img2.jpg`}
+                        src={`http://localhost:4000/getImage?imagePath=${chapter?.author.profileImgURL}`}
                         alt="Author Profile Pic"
                       />
                     </div>
@@ -230,7 +253,7 @@ const Chapter = () => {
                         <h5>
                           <a href={`/userDetails/${chapter?.author._id}`}>{chapter?.author.name}</a>
                         </h5>
-                        <span>Creative</span>
+                        <span style={{ textTransform: "none" }}>{chapter?.author.email}</span>
                       </div>
                       <div className="author-meta">
                         <ul>
@@ -326,7 +349,7 @@ const Chapter = () => {
 
               <div className="details-navigation">
                 <div className="single-navigation two">
-                  <a href={`/stroy/${chapter?.story}`} className="img">
+                  <a href={`/story/${chapter?.story._id}`} className="img">
                     <img src={`${process.env.PUBLIC_URL}/assets/images/roadmap.png`}
                       alt="roadmap button" />
                     <div className="arrow">
@@ -342,46 +365,46 @@ const Chapter = () => {
                     </div>
                   </a>
                   <div className="content">
-                    <a href="#">Back to Roadmap </a>
+                    <a href={`/story/${chapter?.story._id}`}>Back to Roadmap </a>
                   </div>
                 </div>
               </div>
 
               {(crrUser?._id === chapter?.author._id) && (chapter?.title !== "Introduction") &&
-              <React.Fragment>
-              <Button variant="outlined" onClick={handleOpenDialog} color="error">
-                Delete Chapter
-              </Button>
-              <Dialog
-                open={openDialog}
-                onClose={handleCloseDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">
-                  {"Delete " + chapter?.title + "?"}
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    {!error && !success && "Are you sure you want delete this chapter?"}
-                    {error && error}
-                    {success && success}
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button variant="outlined" onClick={handleCloseDialog} autoFocus >Cancel</Button>
-                  {!success && !error && <Button variant="contained" onClick={handleDeleteChapter} color="error"><strong>Delete</strong></Button>}
-                  {success && <Button variant="contained" onClick={() => {navigate(`story/${storyId}`)}} color="error"><strong>Okay</strong></Button>}
-                  {error && <Button variant="contained" onClick={handleCloseDialog} color="error"><strong>Okay</strong></Button>}
-                </DialogActions>
-              </Dialog>
-            </React.Fragment>
+                <React.Fragment>
+                  <Button variant="outlined" onClick={handleOpenDialog} color="error">
+                    Delete Chapter
+                  </Button>
+                  <Dialog
+                    open={openDialog}
+                    onClose={handleCloseDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">
+                      {"Delete " + chapter?.title + "?"}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+                        {!error && !success && "Are you sure you want delete this chapter?"}
+                        {error && error}
+                        {success && success}
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button variant="outlined" onClick={handleCloseDialog} autoFocus >Cancel</Button>
+                      {!success && !error && <Button variant="contained" onClick={handleDeleteChapter} color="error"><strong>Delete</strong></Button>}
+                      {success && <Button variant="contained" onClick={() => { navigate(`/story/${storyId}`) }} color="error"><strong>Okay</strong></Button>}
+                      {error && <Button variant="contained" onClick={handleCloseDialog} color="error"><strong>Okay</strong></Button>}
+                    </DialogActions>
+                  </Dialog>
+                </React.Fragment>
               }
             </Stack>
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

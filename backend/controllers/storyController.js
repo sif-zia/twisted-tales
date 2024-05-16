@@ -24,7 +24,7 @@ const storyCoverStorage = multer.diskStorage({
 
 const uploadStoryCover = multer({
   storage: storyCoverStorage,
-  limits: { fileSize: 2000000 },
+  limits: { fileSize: 5000000 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   },
@@ -103,7 +103,7 @@ const searchStory = async (req, res) => {
     const stories = await Story.aggregate([
       {
         $lookup: {
-          from: "users", 
+          from: "users",
           localField: "initiator",
           foreignField: "_id",
           as: "initiator",
@@ -137,7 +137,7 @@ const searchChapter = async (req, res) => {
     const chapters = await Chapter.aggregate([
       {
         $lookup: {
-          from: "users", 
+          from: "users",
           localField: "author",
           foreignField: "_id",
           as: "author",
@@ -159,7 +159,7 @@ const searchChapter = async (req, res) => {
     ])
     await Chapter.populate(chapters, { path: 'story' });
 
-    res.json({ chapters: chapters});
+    res.json({ chapters: chapters });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -167,14 +167,13 @@ const searchChapter = async (req, res) => {
 
 
 
-const getAuthors = async(req, res) =>{
-  try{
+const getAuthors = async (req, res) => {
+  try {
     const authors = await User.find({ writtenChapters: { $exists: true, $not: { $size: 0 } } });
 
-    res.status(200).json({authors: authors.map(author=>author.name)})
+    res.status(200).json({ authors: authors.map(author => author.name) })
   }
-  catch(error)
-  {
+  catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
@@ -189,7 +188,13 @@ const getStoryRoadmap = async (req, res) => {
     }
 
     const story = await Story.findById(id)
-      .populate("chapters")
+      .populate({
+        path: 'chapters',
+        populate: {
+          path: 'author',
+          model: 'User'
+        }
+      })
       .populate("introChapter");
 
     if (!story) {
@@ -263,7 +268,7 @@ const chapterCoverStorage = multer.diskStorage({
 
 const uploadChapterCover = multer({
   storage: chapterCoverStorage,
-  limits: { fileSize: 1000000 }, // 1MB max file size
+  limits: { fileSize: 5000000 }, // 1MB max file size
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   },
@@ -544,6 +549,6 @@ module.exports = {
   addChapterReaction,
   removeReaction,
   markRead,
-  getReaction, 
+  getReaction,
   getAuthors
 };

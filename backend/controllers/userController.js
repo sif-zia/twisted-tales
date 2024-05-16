@@ -19,13 +19,13 @@ const userProfileStorage = multer.diskStorage({
 
 const uploadUserProfile = multer({
   storage: userProfileStorage,
-  limits: { fileSize: 2000000 },
+  limits: { fileSize: 5000000 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb)
   }
 }).single('profileImg')
 
-function checkFileType (file, cb) {
+function checkFileType(file, cb) {
   const filetypes = /jpeg|jpg|png/
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
   const mimetype = filetypes.test(file.mimetype)
@@ -64,23 +64,38 @@ const updateProfile = async (req, res) => {
 };
 
 
-
 const updatePassword = async (req, res) => {
   try {
     const { newPassword } = req.body
     const { id } = req.params
+    let updatedUser;
+    const user = await User.findById(id)
+    console.log(newPassword, user)
+    bcrypt.compare(newPassword, user.password, async (err, result) => {
+      if (err || !result) {
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(newPassword, salt)
+        console.log(hashedPassword)
+        updatedUser = await User.findByIdAndUpdate(
+          id,
+          { password: hashedPassword },
+          { new: true }
+        )
+        res.status(200).json({ updatedUser })
 
-    const updatedUser = await findByIdAndUpdate(
-      id,
-      { password: newPassword },
-      { new: true }
-    )
+      }
+      else {
+        console.log(newPassword, user.password)
+        return res.status(400).json({ error: 'Same Password' })
 
-    res.status(200).json({ updatedUser })
+      }
+    })
+
   } catch (error) {
     res.status(500).json({ error: error })
   }
 }
+// images\\storyCover\\coverImg-1715776398510.jpg
 
 const addUser = async (req, res) => {
   const { name, email, password } = req.body
@@ -98,7 +113,8 @@ const addUser = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      profileImgURL:"images\\defaultUser.jpg"
     })
 
     res.json({ message: 'User created', user })
