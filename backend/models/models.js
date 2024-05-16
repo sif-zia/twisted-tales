@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  bio:{
+    type:String,
+    required:false
+  },
 
   initiatedStories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Story' }],
 

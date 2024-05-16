@@ -2,6 +2,82 @@ const bcrypt = require("bcrypt");
 const { User, Liked } = require("../models/models");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const multer = require("multer");
+const path = require("path");
+const { each } = require("lodash");
+
+
+const storyCoverStorage = multer.diskStorage({
+  destination: "./images/storyCover/",
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const uploadUserProfile = multer({
+  storage: storyCoverStorage,
+  limits: { fileSize: 2000000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  },
+}).single("coverImg");
+
+function checkFileType(file, cb) {
+  const filetypes = /jpeg|jpg|png/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb("Upload JPG and PNG Images only!");
+  }
+}
+
+const updateProfile = async (req, res) => {
+  try {
+    uploadUserProfile(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ error: err });
+      }
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      //path => user/:id
+      const {  name , bio , coverImg } = req.body;
+      const { id } = req.params
+      
+      const updatedUser = await User.findByIdAndUpdate(id, {name:name, bio:bio, profileImgURL:coverImg}, {new:true})
+
+      res.json({  updatedUser });
+    });
+  } 
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+const updatePassword = async(req, res) =>{
+  try{
+
+    const { newPassword } = req.body
+    const {id} = req.params
+
+    const updatedUser = await findByIdAndUpdate(id, {password:newPassword}, {new:true})
+
+    res.status(200).json({ updatedUser })
+  }
+  catch(error){
+    res.status(500).json({error:error})
+  }
+}
+
 
 const addUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -106,4 +182,8 @@ const getCrrUser = async (req, res) => {
   }
 };
 
-module.exports = { addUser, getUser, loginUser, logoutUser, getCrrUser };
+
+
+
+
+module.exports = { addUser, getUser, loginUser, logoutUser, getCrrUser, updateProfile, updatePassword };
