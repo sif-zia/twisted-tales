@@ -22,9 +22,9 @@ import { getCrrUser } from "../slices/userSlice";
 
 const UpdateProfile = () => {
 
-  const [name, setName] = useState(null)
-  const [bio, setBio] = useState(null)
-  const [email, setEmail] = useState(null)
+  const [name, setName] = useState("")
+  const [bio, setBio] = useState("")
+  const [email, setEmail] = useState("")
   const [isUpdate, setIsUpdate] = useState(false)
   const [profilePic, uploadProfilePic] = useState(null);
   const [error, setError] = useState(null)
@@ -33,12 +33,16 @@ const UpdateProfile = () => {
   const dispatch = useDispatch();
   dispatch(setPage("add story"));
 
+
+
   const crrUser = useSelector(getCrrUser);
-  if (!crrUser) {
-    setName(crrUser.name)
-    setBio(crrUser.bio)
-    setEmail(crrUser.email)
-  }
+  useEffect(() => {
+    if (crrUser) {
+      setName(crrUser.name)
+      setBio(crrUser.bio)
+      setEmail(crrUser.email)
+    }
+  }, [])
 
   const profilePicRef = useRef(null);
 
@@ -147,37 +151,43 @@ const UpdateProfile = () => {
                 rows={2}
               />
             </Grid>
-            {profilePic && <Grid item xs={9}>
-              <TextField
-                InputProps={{
-                  readOnly: true,
-                }}
-                id="cover-img"
-                label="Upload Profile"
-                fullWidth
-                value={profilePic.name} />
-            </Grid>}
-            {profilePic && <Grid item xs={3}>
-              <FormControl>
-                <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
-                  Reselect
-                </InputLabel>
-                <Input
-                  id="upload-file"
-                  type="file"
-                  inputRef={profilePicRef}
-                  onChange={handleProfilePicChange}
-                  style={{ display: "none" }}
-                />
-                <Button
-                  onClick={handleProfilePicUpload}
-                  variant="contained"
-                  component="span"
-                  minHeight="200px"
-                >
-                  Reselect
-                </Button>
-              </FormControl>
+            {profilePic && <Grid item xs={12}>
+              <Stack direction="row" width="100%" spacing={2} justifyContent="space-between" alignItems="center">
+                <TextField
+                  id="cover-img"
+                  label="Upload Profile"
+                  fullWidth
+                  InputProps={{
+                    readOnly: true,
+                    style: { width: 'auto' },
+                    inputProps: {
+                      style: { width: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+                    },
+                  }}
+                  value={profilePic.name} />
+                <Box height="100%">
+                  <FormControl>
+                    <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
+                      Reselect
+                    </InputLabel>
+                    <Input
+                      id="upload-file"
+                      type="file"
+                      inputRef={profilePicRef}
+                      onChange={handleProfilePicChange}
+                      style={{ display: "none" }}
+                    />
+                    <Button
+                      onClick={handleProfilePicUpload}
+                      variant="contained"
+                      component="span"
+                      height="100%"
+                    >
+                      Reselect
+                    </Button>
+                  </FormControl>
+                </Box>
+              </Stack>
             </Grid>}
             {!profilePic && <Grid item xs={12}>
               <FormControl>
