@@ -14,11 +14,13 @@ import Input from "@mui/material/Input";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import CheckIcon from '@mui/icons-material/Check';
 import { useState } from "react";
 import { useRef } from "react";
 import api from "../api/api"
 
-import { getCrrUser } from "../slices/userSlice";
+
+import { getCrrUser, loginUser } from "../slices/userSlice";
 
 const UpdateProfile = () => {
 
@@ -28,10 +30,12 @@ const UpdateProfile = () => {
   const [isUpdate, setIsUpdate] = useState(false)
   const [profilePic, uploadProfilePic] = useState(null);
   const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(false)
+
 
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  dispatch(setPage("add story"));
+  dispatch(setPage("update profile"));
 
 
 
@@ -81,27 +85,39 @@ const UpdateProfile = () => {
 
 
   const handleUpdateProfile = async (e) => {
+
+
     e.preventDefault();
-
-
     if (!name) {
       setError("Name is a required field");
       return;
     }
-    const storyFormData = new FormData();
-    storyFormData.append("title", name);
-    storyFormData.append("desc", bio);
-    storyFormData.append("coverImg", profilePic);
+
+
+    const userFormData = new FormData();
+    if( name!==crrUser.name){
+      userFormData.append("name", name);
+    }
+    if(bio!==crrUser.bio){
+      userFormData.append("bio", bio);
+    }
+    if(profilePic!==null){
+      userFormData.append("coverImg", profilePic);
+    }
 
 
     try {
-      const storyResponse = await api.post("/story", storyFormData, {
+      const userResponse = await api.put(`/user/updateProfile/${crrUser._id}`, userFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      navigate("/")
+      dispatch(loginUser(userResponse.data.updatedUser))
+      if(userResponse.status == 200){
+        setSuccess(true)
+        setIsUpdate(false)
+      }
 
 
     } catch (err) {
@@ -119,8 +135,8 @@ const UpdateProfile = () => {
         <div className="container">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><a href="index-2.html">Story</a></li>
-              <li className="breadcrumb-item active" aria-current="page">Add Story</li>
+              <li className="breadcrumb-item"><a href="index-2.html">Account</a></li>
+              <li className="breadcrumb-item active" aria-current="page">Update User Profile</li>
             </ol>
           </nav>
         </div>
@@ -137,9 +153,20 @@ const UpdateProfile = () => {
         }}
         minHeight="65vh"
       >
-        <Typography variant="h3">Create a New Story</Typography>
+        <Typography variant="h3">Update Profile</Typography>
         <form onSubmit={handleUpdateProfile}>
           <Grid container justifyContent="center" spacing={2} marginTop={2}>
+
+          {success && 
+          <Grid item xs = {12}> 
+          
+            <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+              Profile Updated Successfully!
+            </Alert>
+          </Grid>
+          }
+
+
             {error && <Grid item xs={12}>
               <Alert severity="error">{error}</Alert>
             </Grid>}
