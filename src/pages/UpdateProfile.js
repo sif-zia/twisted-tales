@@ -42,7 +42,31 @@ const UpdateProfile = () => {
       setBio(crrUser.bio)
       setEmail(crrUser.email)
     }
-  }, [])
+  }, [crrUser])
+
+  useEffect(() => {
+
+    if (!crrUser) return
+
+    console.log("Is update", isUpdate);
+
+    if (crrUser.bio !== null) {
+      if (name !== crrUser.name || bio !== crrUser.bio || profilePic) {
+        setIsUpdate(true)
+      }
+      else {
+        setIsUpdate(false)
+      }
+    }
+    else {
+      if (name !== crrUser.name || profilePic) {
+        setIsUpdate(true)
+      }
+      else {
+        setIsUpdate(false)
+      }
+    }
+  }, [name, bio, profilePic, crrUser])
 
   const profilePicRef = useRef(null);
 
@@ -60,8 +84,8 @@ const UpdateProfile = () => {
     e.preventDefault();
 
 
-    if (!name || !bio || !profilePic) {
-      setError("Please fill all the fields");
+    if (!name) {
+      setError("Name is a required field");
       return;
     }
     const storyFormData = new FormData();
@@ -189,26 +213,36 @@ const UpdateProfile = () => {
                 </Box>
               </Stack>
             </Grid>}
-            {!profilePic && <Grid item xs={12}>
-              <FormControl>
-                <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
-                  Upload Profile Picture
-                </InputLabel>
-                <Input
-                  id="upload-file"
-                  type="file"
-                  inputRef={profilePicRef}
-                  onChange={handleProfilePicChange}
-                  style={{ display: "none" }}
-                />
+            <Grid item xs={12}>
+              <Stack direction="row" width="100%" justifyContent="space-between" gap={2}>
+                {!profilePic && <FormControl>
+                  <InputLabel htmlFor="upload-file" style={{ display: "none" }}>
+                    Upload Profile Picture
+                  </InputLabel>
+                  <Input
+                    id="upload-file"
+                    type="file"
+                    inputRef={profilePicRef}
+                    onChange={handleProfilePicChange}
+                    style={{ display: "none" }}
+                  />
+                  <Button
+                    onClick={handleProfilePicUpload}
+                    variant="contained"
+                  >
+                    Upload Profile Picture
+                  </Button>
+                </FormControl>}
                 <Button
-                  onClick={handleProfilePicUpload}
+                  type="submit"
                   variant="contained"
+                  color="primary"
+                  disabled={!isUpdate}
                 >
-                  Upload Profile Picture
+                  Update Profile
                 </Button>
-              </FormControl>
-            </Grid>}
+              </Stack>
+            </Grid>
           </Grid>
         </form>
       </Box>
