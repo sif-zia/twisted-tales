@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Logo from "../components/Logo";
 import axios from "axios"
-import { Grid } from '@mui/material';
+import { Grid, useMediaQuery } from '@mui/material';
 
 
 const Layout = () => {
@@ -33,42 +33,44 @@ const Layout = () => {
     fetchQuote();
   }, []);
 
-
+  const isSmallScreen = useMediaQuery('(max-width: 900px)');
 
   return (
     <div>
       <section>
-        <Grid container width="100%" className="topbar-1">
-          <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-start", alignItems: "center" }}>
-            <p className="date" style={{ paddingLeft: "10px", fontSize: "1rem", paddingBottom: "0px", marginBottom: "0px" }}>
-              {formattedDate}
-            </p></Grid>
-          <Grid item xs={6} style={{ display: "flex", direction: "column", justifyContent: "center", alignItems: "center" }} ><Logo /></Grid>
-          <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-end", alignItems: "center" }}> <p style={{ color: "#f5f8fc", paddingBottom: "0px", marginBottom: "0px", paddingRight: "10px" }} > {quote ? quote :
-            <ul className="social-1">
-              <li>
-                <a href="https://www.facebook.com/">
-                  <i className="bx bxl-facebook"></i>6.5K
-                </a>
-              </li>
-              <li>
-                <a href="https://www.twitter.com/">
-                  <i className="bx bxl-twitter"></i>3.5K
-                </a>
-              </li>
-              <li>
-                <a href="https://www.pinterest.com/">
-                  <i className="bx bxl-pinterest-alt"></i>2.1K
-                </a>
-              </li>
-              <li>
-                <a href="https://www.instagram.com/">
-                  <i className="bx bxl-instagram"></i>1.9K
-                </a>
-              </li>
-            </ul>
-          }</p></Grid>
-        </Grid>
+        {!isSmallScreen &&
+          <Grid container width="100%" className="topbar-1">
+            <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-start", alignItems: "center" }}>
+              <p className="date" style={{ paddingLeft: "10px", fontSize: "1rem", paddingBottom: "0px", marginBottom: "0px" }}>
+                {formattedDate}
+              </p></Grid>
+            <Grid item xs={6} style={{ display: "flex", direction: "column", justifyContent: "center", alignItems: "center" }} ><Logo /></Grid>
+            <Grid item xs={3} style={{ display: "flex", direction: "column", justifyContent: "flex-end", alignItems: "center" }}> <p style={{ color: "#f5f8fc", paddingBottom: "0px", marginBottom: "0px", paddingRight: "10px" }} > {quote ? quote :
+              <ul className="social-1">
+                <li>
+                  <a href="https://www.facebook.com/">
+                    <i className="bx bxl-facebook"></i>6.5K
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.twitter.com/">
+                    <i className="bx bxl-twitter"></i>3.5K
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.pinterest.com/">
+                    <i className="bx bxl-pinterest-alt"></i>2.1K
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/">
+                    <i className="bx bxl-instagram"></i>1.9K
+                  </a>
+                </li>
+              </ul>
+            }</p></Grid>
+          </Grid>
+        }
         <NavBar />
 
       </section>

@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import BookmarkAddOutlinedIcon from '@mui/icons-material/BookmarkAddOutlined';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,7 +18,7 @@ import api from "../api/api"
 import { format } from 'date-fns';
 import { useSelector } from "react-redux";
 import { getCrrUser } from "../slices/userSlice"
-import { useMediaQuery, CircularProgress } from '@mui/material';
+import { useMediaQuery, CircularProgress, Tooltip } from '@mui/material';
 
 
 const Chapter = () => {
@@ -31,13 +33,42 @@ const Chapter = () => {
     setOpenDialog(false);
   };
 
-  const isSmallScreen = useMediaQuery('(max-width:992px)');
+  const isSmallScreen = useMediaQuery('(max-width:1400px)');
+  const shouldAddMargin = useMediaQuery('(max-width:970px)');
   const { storyId, chapterId } = useParams()
   const [chapter, setChapter] = useState(null)
   const [error, setError] = useState(null)
   const [isLiked, setLiked] = useState(null)
   const crrUser = useSelector(getCrrUser)
   const [isLoading, setIsLoading] = useState(true)
+  const [isMarkedRead, setIsMarkedRead] = useState(null)
+  const [likes, setLikes] = useState(null)
+  const [dislikes, setDislikes] = useState(null)
+
+  useEffect(() => {
+    const sendIsMarkedReadRequest = async () => {
+      try {
+        const response = await api.get(`/story/${storyId}/chapter/${chapterId}/markRead`)
+        const isMarkedRead = response.data.isMarkedRead
+        setIsMarkedRead(isMarkedRead)
+        console.log("isMarkedRead", isMarkedRead)
+      }
+      catch (err) {
+        console.log(err)
+      }
+    }
+    sendIsMarkedReadRequest()
+  }, [])
+
+  const handleMarkRead = async () => {
+    try {
+      await api.post(`/story/${storyId}/chapter/${chapterId}/markRead`)
+      setIsMarkedRead(prev => !prev)
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
 
 
   const navigate = useNavigate()
@@ -62,7 +93,7 @@ const Chapter = () => {
     sendChapterRequest()
     setIsLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isLiked])
 
   useEffect(() => {
     setIsLoading(true)
@@ -83,11 +114,27 @@ const Chapter = () => {
         console.log(err)
       }
     }
+
     getReaction()
     setIsLoading(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const getNoOfLikes = async () => {
+      try {
+        const response = await api.get(`/story/${storyId}/chapter/${chapterId}/reactions`)
+        setLikes(response.data.likes)
+        setDislikes(response.data.dislikes)
+      }
+      catch (err) {
+        console.log(err)
+      }
+    }
+
+    getNoOfLikes()
+  }, [isLiked])
 
   const handleAddLike = async () => {
     if (isLiked === false) {
@@ -180,12 +227,19 @@ const Chapter = () => {
           <div className="post-gallery-content">
             <div className="post-format-wrapper">
               <div className="row justify-content-center">
-                <div className="col-lg-9 p-lg-0" style={{ maxWidth: isSmallScreen ? "70vw" : "55vw" }}>
+                <div className="col-lg-9 p-lg-0" style={{ maxWidth: isSmallScreen ? "625px" : "930px" }}>
                   <div className="post-thumb">
                     <div className="post-thumb-title">
                       <span>{chapter?.story.genre}</span>
-                      <h2>{chapter?.title}</h2>
-                      <p className="second-para" style={{fontSize:"1.5rem"}}>
+                      <Stack direction="row" justifyContent="space-between" width="100%">
+                        <h2>{chapter?.title}</h2>
+                        {isMarkedRead !== null && <Tooltip title="Mark as Read" arrow>
+                          <Button onClick={handleMarkRead}>
+                            {isMarkedRead ? <BookmarkAddedIcon fontSize="large" /> : <BookmarkAddOutlinedIcon fontSize="large" />}
+                          </Button>
+                        </Tooltip>}
+                      </Stack>
+                      <p className="second-para" style={{ fontSize: "1.5rem" }}>
                         {chapter?.desc.slice(0, 1).toUpperCase() + chapter?.desc.slice(1)}
                       </p>
                     </div>
@@ -213,7 +267,7 @@ const Chapter = () => {
                   </div>
                 </div>
                 {/* {!isSmallScreen && } */}
-                <div className="col-lg-3 p-lg-0" style={{ marginTop: "50px", marginLeft: isSmallScreen ? "0px" : "50px", maxWidth: "65vw", justifyContent: "center", alignItems: "center" }}>
+                <div className="col-lg-3 p-lg-0" style={{ marginTop: "50px", marginLeft: shouldAddMargin ? "0px" : "50px", maxWidth: "65vw", justifyContent: "center", alignItems: "center" }}>
                   <div className="author-sidebar">
                     <div className="author-sidebar-img">
                       <img
@@ -308,7 +362,7 @@ const Chapter = () => {
 
                 )}>
                   {isLiked === true ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-                  <span style={{ color: "primary", fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>250</span>
+                  <span style={{ color: "primary", fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>{likes}</span>
                 </Button>
 
 
@@ -316,7 +370,7 @@ const Chapter = () => {
                   isLiked === false ? handleRemoveReaction() : handleAddDislike()
                 )}>
                   {isLiked === false ? <ThumbDownAltIcon /> : <ThumbDownOffAltOutlinedIcon />}
-                  <span style={{ color: "primary", fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>10</span>
+                  <span style={{ color: "primary", fontWeight: "bold", marginLeft: "10px", fontSize: "20px" }}>{dislikes}</span>
                 </Button>
               </Stack>
 

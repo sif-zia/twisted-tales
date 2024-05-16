@@ -2,10 +2,8 @@ const bcrypt = require('bcrypt')
 const { User, Liked } = require('../models/models')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const fs = require('fs')
 const multer = require('multer')
 const path = require('path')
-const { each } = require('lodash')
 
 const userProfileStorage = multer.diskStorage({
   destination: './images/userProfile/',
@@ -92,7 +90,7 @@ const updatePassword = async (req, res) => {
     })
 
   } catch (error) {
-    res.status(500).json({ error: error })
+    res.status(500).json({ error: error.message })
   }
 }
 // images\\storyCover\\coverImg-1715776398510.jpg
@@ -120,7 +118,7 @@ const addUser = async (req, res) => {
     res.json({ message: 'User created', user })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: error })
+    res.status(500).json({ error: error.message })
   }
 }
 
@@ -155,7 +153,7 @@ const getUser = async (req, res) => {
 
     res.status(200).json({ user, likes })
   } catch (error) {
-    res.status(500).json({ error: error })
+    res.status(500).json({ error: error.message })
   }
 }
 
@@ -197,7 +195,7 @@ const getCrrUser = async (req, res) => {
     const user = await User.findById(req.user.id)
     res.json({ user })
   } catch (error) {
-    res.status(500).json({ error: error })
+    res.status(500).json({ error: error.message })
   }
 }
 

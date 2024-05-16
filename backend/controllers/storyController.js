@@ -10,6 +10,7 @@ const multer = require("multer");
 const path = require("path");
 const mongoose = require("mongoose");
 const { each } = require("lodash");
+const { count } = require("console");
 
 
 const storyCoverStorage = multer.diskStorage({
@@ -514,7 +515,7 @@ const markRead = async (req, res) => {
 const getReaction = async (req, res) => {
   try {
     const { chapterId } = req.params;
-    const { type } = req.body;
+    // const { type } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(chapterId)) {
       return res.status(400).json({ error: "Invalid Chapter ID" });
@@ -535,6 +536,50 @@ const getReaction = async (req, res) => {
   }
 }
 
+const isMarkedRead = async (req, res) => {
+  const { id, chapterId } = req.params
+
+  try {
+    if(mongoose.Types.ObjectId.isValid(id) === false) {
+      return res.status(400).json({ error: 'Invalid User ID' })
+    }
+
+    if(mongoose.Types.ObjectId.isValid(chapterId) === false) {
+      return res.status(400).json({ error: 'Invalid Chapter ID' })
+    }
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const isMarkedRead = user.readChapters.includes(chapterId);
+
+    res.json({ isMarkedRead });
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
+const getNoOfReactions = async (req, res) => {
+  try {
+    const { chapterId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(chapterId)) {
+      return res.status(400).json({ error: "Invalid Chapter ID" });
+    }
+
+    const noOfLikes = await Liked.countDocuments({ likedChapter: chapterId, type: "like"});
+    const noOfDislikes = await Liked.countDocuments({ likedChapter: chapterId, type: "dislike"});
+
+
+    res.json({ likes: noOfLikes, dislikes: noOfDislikes });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 module.exports = {
   addStory,
@@ -550,5 +595,7 @@ module.exports = {
   removeReaction,
   markRead,
   getReaction,
-  getAuthors
+  getAuthors,
+  isMarkedRead,
+  getNoOfReactions
 };

@@ -11,7 +11,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { Stack } from "@mui/material";
 
 import Sidebar from "./Sidebar";
@@ -55,7 +54,6 @@ const NavBar = () => {
 
     const [isOpen, setOpen] = React.useState(false);
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const crrPage = useSelector(getPage);
@@ -64,10 +62,6 @@ const NavBar = () => {
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
     };
 
     const handleCloseUserMenu = () => {
