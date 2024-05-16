@@ -13,14 +13,4 @@ router.get("/writerOfTheMonth", getWriterOfTheMonth)
 router.get("/getGenreCover", getGenreCover)
 router.get("/topThree", getTopThree)
 
-
-
-// trending stories
-// genres
-// latest
-// top picks
-// writer of the month
-
-// best sellers --bakwas miss
-
 module.exports = router;
