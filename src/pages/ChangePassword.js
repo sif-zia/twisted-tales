@@ -109,10 +109,6 @@ const ChangePassword = () => {
     setPasswordValidation(isPasswordValid);
     setRetypePasswordValidation(isRetypePasswordValid);
 
-    console.log("Old Password Validation", isOldPasswordValid);
-    console.log("Password Validation", isPasswordValid);
-    console.log("Retype Password Validation", isRetypePasswordValid);
-
     if (isOldPasswordValid && isPasswordValid && isRetypePasswordValid) {
       await sendPasswordChangeRequest();
     }
