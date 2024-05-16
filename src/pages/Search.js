@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FormControl,
   InputAdornment,
@@ -14,10 +14,16 @@ import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import { useMediaQuery } from '@mui/material';
-import Pagination from '@mui/material/Pagination';
+import { useMediaQuery } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
 import { useDispatch } from "react-redux";
 import { setPage } from "../slices/navbarSlice";
+import api from "../api/api";
+import Alert from '@mui/material/Alert';
+import { borderRadius } from "@mui/system";
+
+
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -30,18 +36,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "Oliver Hansen",
-  "Van Henry",
-  "April Tucker",
-  "Ralph Hubbard",
-  "Omar Alexander",
-  "Carlos Abbott",
-  "Miriam Wagner",
-  "Bradley Wilkerson",
-  "Virginia Andrews",
-  "Kelly Snyder",
-];
 
 function getStyles(name, personName, theme) {
   return {
@@ -53,33 +47,98 @@ function getStyles(name, personName, theme) {
 }
 
 
-const searchResultData = {
-  storyName : "Meri Kahani",
-  date : "20 January",
-  initiatorName: "Hamnana",
-  genre: "Comedy"
-}
-
 
 const Search = () => {
   const dispatch = useDispatch();
   dispatch(setPage("search"));
 
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  const [personName, setPersonName] = useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setPersonName(typeof value === "string" ? value.split(",") : value);
+    // console.log(personName);
   };
 
-  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down('sm'));
-  const isDesktop = useMediaQuery('(min-width: 1500px)');
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isDesktop = useMediaQuery("(min-width: 1500px)");
+
+
+
+
+  const [chapters, setChapters] = useState([]);
+  const [stories, setStories] = useState([]) //show trending stories by default
+  const [search, setSearch] = useState(null);
+  const [names, setNames] = useState([])
+
+ 
+  const sendAuthorsRequest = async()=>{
+    try{
+      const authorsResponse = await api.get( "http://localhost:4000/story/authors")
+      const temp  = authorsResponse.data.authors
+      setNames(temp);
+    }
+    catch(err){
+      console.log(err)
+    }
+
+  }
+
+  useEffect(()=>{
+    sendAuthorsRequest()
+  }, [])
+
+  const sendChapterSearchRequest = async () => {
+    try {
+      const chaptersResponse = await api.get(
+        "http://localhost:4000/story/search/chapter",
+        {
+          params: {
+            keyword: search,
+          },
+        }
+      );
+      const temp = chaptersResponse.data.chapters;
+      setChapters(temp);
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const sendStorySearchRequest = async () => {
+    try {
+      const storiesResponse = await api.get(
+        "http://localhost:4000/story/search",
+        {
+          params: {
+            keyword: search,
+          },
+        }
+      );
+      const temp = storiesResponse.data.stories;
+      setStories(temp);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+
+
+  useEffect(() => {
+    setChapters([]);
+    setStories([])
+    if(search!== "")
+    {
+      sendChapterSearchRequest();
+      sendStorySearchRequest();
+    }
+
+  }, [search]);
+
 
 
   return (
@@ -98,101 +157,89 @@ const Search = () => {
           </nav>
         </div>
       </div>
-    <Grid container >
-      <Grid item xs={1}></Grid>
-      <Grid item container xs={10}>
-        <Grid item xs={12}>
-          <Stack
-            direction={isSmallScreen ? 'column' : 'row'}
-            sx={{ padding: "0 15vw", margin: "30px 0" }}
-            spacing={2}
-          >
-            <FormControl fullWidth variant="outlined">
-              <OutlinedInput
-                style={{
-                  borderRadius: "20px",
-                }}
-                id="outlined-adornment-password"
-                endAdornment={
-                  <InputAdornment position="end">
-                    <SearchIcon />
-                  </InputAdornment>
-                }
-                placeholder="Search"
-              />
-            </FormControl>
+      <Grid container>
+        <Grid item xs={1}></Grid>
+        <Grid item container xs={10}>
+          <Grid item xs={12}>
+            <Stack
+              direction={isSmallScreen ? "column" : "row"}
+              sx={{ padding: "0 15vw", margin: "30px 0" }}
+              spacing={2}
+            >
+              <FormControl fullWidth variant="outlined">
+                <OutlinedInput
+                  style={{
+                    borderRadius: "20px",
+                  }}
+                  id="outlined-adornment-password"
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <SearchIcon />
+                    </InputAdornment>
+                  }
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                  placeholder="Search"
+                />
+              </FormControl>
 
-            <FormControl fullWidth>
-            <InputLabel id="demo-multiple-chip-label">Filters</InputLabel>
-              <Select
-                style={{
-                  borderRadius: "20px",
-                }}
-                labelId="demo-multiple-chip-label"
-                id="demo-multiple-chip"
-                multiple
-                value={personName}
-                onChange={handleChange}
-                input={<OutlinedInput id="select-multiple-chip" label = "Filters"/>}
-                renderValue={(selected) => (
-                  selected.length ? (
-                    <Box sx={{ display: 'flex', gap: 0.5, overflow: 'auto' }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} />
-                      ))}
-                    </Box>
-                  ) : (
-                    <Box>
-                      <div>PLACEHOLDER</div>
-                    </Box>
-                  )
-                )}
-                MenuProps={MenuProps}
-              >
-                {names.map((name) => (
-                  <MenuItem
-                    key={name}
-                    value={name}
-                    style={getStyles(name, personName, theme)}
-                  >
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
+           
+            </Stack>
 
-          <Grid container  direction={isDesktop ? 'row' : 'column'} spacing={2} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-            <Grid item xs={6}>
-              <SearchItem storyName = {searchResultData.storyName} date = {searchResultData.date} initiatorName = {searchResultData.initiatorName} genre={searchResultData.genre} />
-            </Grid>
-            <Grid item xs={6}>
-              <SearchItem storyName = {searchResultData.storyName} date = {searchResultData.date} initiatorName = {searchResultData.initiatorName} genre={searchResultData.genre} />
-            </Grid>
-            <Grid item xs={6}>
-              <SearchItem storyName = {searchResultData.storyName} date = {searchResultData.date} initiatorName = {searchResultData.initiatorName} genre={searchResultData.genre} />
-            </Grid>
-            <Grid item xs={6}>
-              <SearchItem storyName = {searchResultData.storyName} date = {searchResultData.date} initiatorName = {searchResultData.initiatorName} genre={searchResultData.genre} />
-            </Grid>
-            <Grid item xs={6}>
-              <SearchItem storyName = {searchResultData.storyName} date = {searchResultData.date} initiatorName = {searchResultData.initiatorName} genre={searchResultData.genre} />
-            </Grid>
-            <Grid item xs={6}>
-              <SearchItem storyName = {searchResultData.storyName} date = {searchResultData.date} initiatorName = {searchResultData.initiatorName} genre={searchResultData.genre} />
-            </Grid>
-          </Grid>
-          
-            <Stack justifyContent={"center"} alignItems={"center"} m={6} >
-            <Pagination  count={isSmallScreen ? 5 : 10} color="primary" />
-              </Stack> 
+            {chapters && stories &&
+            <Grid
+              container
+              direction={isDesktop ? "row" : "column"}
+              spacing={2}
+              display={"flex"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              my = {2}
+            >
+              {stories?.map((story)=>(
+                 <Grid item xs={6}>
+                 <SearchItem
+                   storyName={story.title}
+                   date={story.createdAt}
+                   genre={story.genre}
+                   coverImgURL={story.coverImgURL}
+                   isStory={true}
+                   storyId={story._id}
+                   chapterId={""}
+                 />
+               </Grid>
+              ))}
+               {chapters?.map((chapter)=>(
+                 <Grid item xs={6}>
+                 <SearchItem
+                   storyName={chapter.title}
+                   date={chapter.createdAt}
+                   genre={chapter.story.genre}
+                   coverImgURL={chapter.coverImgURL}
+                   isStory={false}
+                   storyId={chapter.story._id}
+                   chapterId={chapter._id}
+                 />
+               </Grid>
+              ))}
             
+            </Grid>
+            }
+            {chapters.length == 0  && stories.length==0 && search?.length>0 &&
+            <Box style={{ display:"flex", justifyContent:"center", alignItems:"center" }}>
+              <Alert style={{width: "30vw" , display:"flex", justifyContent:"center", alignItems:"center", borderRadius:"20px"}} severity="warning">No Results Found</Alert>
+            </Box>
+            }
+            <Stack justifyContent={"center"} alignItems={"center"} m={6}>
+              <Pagination count={isSmallScreen ? 5 : 10} color="primary"/> 
+              {/* onChange={changePage} */}
+            </Stack>
+          </Grid>
         </Grid>
+        <Grid item xs={1}></Grid>
       </Grid>
-      <Grid item xs={1}></Grid>
-    </Grid>
     </div>
-
   );
 };
 
