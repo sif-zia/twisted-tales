@@ -153,9 +153,7 @@ function StoryRoadmap() {
 
 	return (
 		<Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
-			{!loading &&
-				<div style={{ width: '100%', height: '100%', backgroundColor: '#f0f4f8' }}>
-					{story &&
+			{story && !loading &&
 						<Paper elevation={1} style={{ width: '100%', backgroundColor: '#f5f4e9' }}>
 						<Stack direction="row" width="100%" justifyContent={(crrUser._id === story.initiator) ? "space-between" : "flex-start"} paddingX={3} paddingY={1}>
 							<div>
@@ -191,7 +189,10 @@ function StoryRoadmap() {
 								</Dialog>
 							</React.Fragment>}
 						</Stack>
-						</Paper>}
+						</Paper>}			
+			{!loading &&
+				<div style={{ width: '100%', height: '100%', backgroundColor: '#f0f4f8' }}>
+					
 					<ReactFlow
 						nodes={nodes}
 						edges={edges}

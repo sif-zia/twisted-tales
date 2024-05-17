@@ -77,7 +77,7 @@ const Layout = () => {
       <main style={{ backgroundColor: "#FAF9F6" }}>
         <Outlet />
       </main>
-      <footer className="style-1">
+      <footer className="style-1" style={{zIndex:1000}}>
         <div className="container">
 
           <div className="help-center d-flex justify-content-md-between justify-content-center align-items-center">

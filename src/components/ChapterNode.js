@@ -10,6 +10,11 @@ import { Box } from "@mui/material";
 import { motion } from "framer-motion"
 import { Handle, Position } from 'reactflow';
 import { useNavigate } from "react-router-dom";
+import { maxHeight, maxWidth } from "@mui/system";
+
+
+const nodeWidth = 405;
+const nodeHeight = 480;
 
 const ChapterNode = ({ data }) => {
 	const navigate = useNavigate();
@@ -27,7 +32,7 @@ const ChapterNode = ({ data }) => {
 	return (
 		<>
 			<Handle type="target" position={Position.Top} isConnectable={true} />
-			<Box style={{ margin: "11px" }}>
+			<Box style={{ margin: "11px", maxWidth:nodeWidth, maxHeight:nodeHeight}}>
 				<Card sx={{ height: "95%", borderRadius: "25px" }}>
 					<motion.div whileHover={{ scale: 1.1 }}  >
 						<CardMedia sx={{ height: "150px", overflow: "hidden" }}

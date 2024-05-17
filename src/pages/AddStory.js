@@ -32,7 +32,7 @@ const AddStory = () => {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  const genres = ["Genre", "Romance", "Drama", "Horror", "Thriller", "Suspense", "Comedy", "Fiction", "Sci-Fi", "Other"]
+  const genres = ["Genre", "Romance", "Drama", "Horror", "Mystery", "Comedy", "Fiction", "Sci-Fi", "Action", "Adventure", "Other"]
   const [showIntro, setShowIntro] = useState(false)
   const storyCoverRef = useRef(null);
   const chapterCoverRef = useRef(null)
