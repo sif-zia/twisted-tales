@@ -17,6 +17,8 @@ const {
     getAuthors,
     isMarkedRead,
     getNoOfReactions,
+    isOwned,
+    buyStory
 } = require("../controllers/storyController");
 const verifyToken = require("../middlewares/verifyToken");
 
@@ -31,6 +33,8 @@ router.get("/:id/chapter/:chapterId/markRead", verifyToken, isMarkedRead);
 router.delete("/:id/chapter/:chapterId", verifyToken, deleteChapter);
 router.get("/:id/chapter/:chapterId", verifyToken, getChapter);
 router.post("/:id/chapter", verifyToken, addChapter);
+router.get("/:id/isowned", verifyToken, isOwned);
+router.post("/:id/buy", verifyToken, buyStory);
 router.get("/:id/roadmap", verifyToken, getStoryRoadmap);
 router.get("/search/chapter", verifyToken, searchChapter);
 router.get("/search", verifyToken, searchStory);

@@ -11,6 +11,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const { each } = require("lodash");
 const { count } = require("console");
+const { constants } = require("http2");
 
 
 const storyCoverStorage = multer.diskStorage({
@@ -99,9 +100,11 @@ const getStory = async (req, res) => {
 
 const searchStory = async (req, res) => {
   try {
-    const { keyword } = req.query;
+    let { keyword, genre } = req.query;
 
-    const stories = await Story.aggregate([
+    keyword = keyword || '';
+
+    let stories = await Story.aggregate([
       {
         $lookup: {
           from: "users",
@@ -119,11 +122,14 @@ const searchStory = async (req, res) => {
             { title: { $regex: keyword, $options: "i" } },
             { desc: { $regex: keyword, $options: "i" } },
             { genre: { $regex: keyword, $options: "i" } },
-            { "initiator.name": { $regex: keyword, $options: "i" } },
           ],
-        },
+        }
       },
     ]);
+
+    if(genre) {
+      stories = stories.filter(story => story.genre === genre);
+    }
 
     res.json({ stories });
   } catch (error) {
@@ -133,9 +139,11 @@ const searchStory = async (req, res) => {
 
 const searchChapter = async (req, res) => {
   try {
-    const { keyword } = req.query;
+    let { keyword, genre } = req.query;
 
-    const chapters = await Chapter.aggregate([
+    keyword = keyword || '';
+
+    let chapters = await Chapter.aggregate([
       {
         $lookup: {
           from: "users",
@@ -159,6 +167,10 @@ const searchChapter = async (req, res) => {
       },
     ])
     await Chapter.populate(chapters, { path: 'story' });
+
+    if(genre) {
+      chapters = chapters.filter(chapter => chapter.story.genre === genre);
+    }
 
     res.json({ chapters: chapters });
   } catch (error) {
@@ -581,6 +593,51 @@ const getNoOfReactions = async (req, res) => {
   }
 }
 
+const buyStory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const story = await Story.findById(id);
+    if (!story) {
+      return res.status(404).json({ error: "Story not found" });
+    }
+
+    if (story.boughtBy.includes(req.user.id)) {
+      return res.status(400).json({ error: "Story already bought" });
+    }
+
+    if(story.price === 0) {
+      return res.status(400).json({ error: "Story is free" });
+    }
+
+    const updatedStory = await Story.findByIdAndUpdate(id, {
+      $push: { boughtBy: req.user.id },
+    }, { new: true });
+    
+    res.json({ message: "Story bought successfully", story: updatedStory });
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const isOwned = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const story = await Story.findById(id);
+
+    if (!story) {
+      return res.status(404).json({ error: "Story not found" });
+    }
+
+    const isOwned = story.boughtBy.includes(req.user.id) || story.initiator.equals(req.user.id) || story.price === 0;
+
+    res.json({ isOwned });
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 module.exports = {
   addStory,
   getStory,
@@ -597,5 +654,7 @@ module.exports = {
   getReaction,
   getAuthors,
   isMarkedRead,
-  getNoOfReactions
+  getNoOfReactions,
+  buyStory,
+  isOwned
 };

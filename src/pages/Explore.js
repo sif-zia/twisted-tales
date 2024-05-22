@@ -341,7 +341,7 @@ const Explore = () => {
       </div>
 
       {/*Top Picks Carousel*/}
-      {topPicks && (
+      {topPicks && topPicks.length > 0 && (
         <Box>
           <Typography sx={{ margin: "110px 7vw 25px 7vw" }} variant="h3">
             Top Picks For You

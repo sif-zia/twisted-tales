@@ -138,6 +138,20 @@ const NavBar = () => {
                                     {page}
                                 </Button>
                             ))}
+                            {!isLoggedIn && <Button
+                                key="Login"
+                                onClick={() => navigate('/login')}
+                                sx={{
+                                    my: 2,
+                                    color: "black",
+                                    display: "block",
+                                    fontFamily: '"Dosis", sans-serif',
+                                    textTransform: "none",
+                                    fontSize: "18px",
+                                }}
+                            >
+                                Login
+                            </Button>}
                         </Stack>
 
 

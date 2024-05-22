@@ -21,8 +21,13 @@ import { setPage } from "../slices/navbarSlice";
 import api from "../api/api";
 import Alert from '@mui/material/Alert';
 import { borderRadius } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
+import { useLocation } from "react-router-dom";
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 
 const ITEM_HEIGHT = 48;
@@ -67,39 +72,36 @@ const Search = () => {
   const isDesktop = useMediaQuery("(min-width: 1500px)");
 
 
-
-
   const [chapters, setChapters] = useState([]);
   const [stories, setStories] = useState([]) //show trending stories by default
   const [search, setSearch] = useState(null);
   const [names, setNames] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [genre, setGenre] = useState("All")
 
+  const query = useQuery();
+  const navigate = useNavigate();
 
-  const sendAuthorsRequest = async () => {
-    try {
-      const authorsResponse = await api.get("http://localhost:4000/story/authors")
-      const temp = authorsResponse.data.authors
-      setNames(temp);
-    }
-    catch (err) {
-      console.log(err)
-    }
-
-  }
-
-  useEffect(() => {
-    sendAuthorsRequest()
-  }, [])
+  
 
   const sendChapterSearchRequest = async () => {
+    const params = {}
+    const queryGenre = query.get('genre')
+    if (genre && genre !== "All") {
+      params.genre = genre
+    }
+    if (queryGenre) {
+      params.genre = queryGenre
+      setGenre(queryGenre)
+    }
+    if (search) {
+      params.keyword = search
+    }
     try {
       const chaptersResponse = await api.get(
         "http://localhost:4000/story/search/chapter",
         {
-          params: {
-            keyword: search,
-          },
+          params: params,
         }
       );
       const temp = chaptersResponse.data.chapters;
@@ -111,13 +113,23 @@ const Search = () => {
   };
 
   const sendStorySearchRequest = async () => {
+    const params = {}
+    const queryGenre = query.get('genre')
+    if (genre && genre !== "All") {
+      params.genre = genre
+    }
+    if (queryGenre) {
+      params.genre = queryGenre
+      setGenre(queryGenre)
+    }
+    if (search) {
+      params.keyword = search
+    }
     try {
       const storiesResponse = await api.get(
         "http://localhost:4000/story/search",
         {
-          params: {
-            keyword: search,
-          },
+          params: params,
         }
       );
       const temp = storiesResponse.data.stories;
@@ -127,25 +139,44 @@ const Search = () => {
     }
   };
 
+  const getGenres = async () => {
+    try {
+      const response = await api.get("/explore/genres");
+      setNames(response.data.genres.map(genre => genre.genre));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
+  const handleSearchRequest = async () => {
+    setIsLoading(true)
+    await getGenres()
+    if (search !== "" || genre !== "") {
+      await sendChapterSearchRequest();
+      await sendStorySearchRequest();
+    }
+    setIsLoading(false)
+  }
 
+  const handleGenreChange = async (event) => {
+    if(query.get('genre')) {
+      navigate(`/search`)
+    }
+    if(event.target.value === "All" && genre !== "All") {
+      setGenre("All")
+    }
+    else if(event.target.value !== genre) {
+      setGenre(event.target.value);
+    }
+    
+    
+  };
 
   useEffect(() => {
-
-    const handleSearchRequest = async () => {
-
-      setIsLoading(true)
-      setChapters([]);
-      setStories([])
-      if (search !== "") {
-        await sendChapterSearchRequest();
-        await sendStorySearchRequest();
-        setIsLoading(false)
-      }
-    }
-
     handleSearchRequest()
-
+  }, [genre]);
+  useEffect(() => {
+    handleSearchRequest()
   }, [search]);
 
 
@@ -194,11 +225,31 @@ const Search = () => {
                 />
               </FormControl>
 
-
+              <FormControl variant="outlined">
+                <InputLabel id="genre-selector">Genre</InputLabel>
+                <Select
+                  style={{
+                    borderRadius: "20px",
+                    minWidth: "150px",
+                  }}
+                  labelId="genre-selector"
+                  id="genre-selector-select"
+                  value={genre}
+                  label="Genre"
+                  onChange={handleGenreChange}
+                >
+                  <MenuItem value="All">All</MenuItem>
+                  {names && names.map((genreName) => (
+                    <MenuItem key={genreName} value={genreName}>
+                      {genreName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
 
 
-            {isLoading && search!=="" &&
+            {(isLoading || (query.get('genre') && genre === "All")) &&
               <Grid>
                 <Stack style={{ width: '100%', height: '70vh', justifyContent: 'center', alignItems: 'center' }}>
                   <CircularProgress style={{ width: "75px" }} />

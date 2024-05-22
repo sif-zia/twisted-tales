@@ -8,8 +8,10 @@ import Divider from '@mui/material/Divider';
 import { Stack } from '@mui/material';
 import { Box } from "@mui/material";
 import { motion } from "framer-motion"
+import { useNavigate } from "react-router-dom";
 
 const SlidingCategoryCard = ({ title, NoOfStories, NoOfReads, imageURL }) => {
+    const navigate = useNavigate()
     return (
         <Box style={{ margin: "11px" }}>
             <Card sx={{ height: "95%" }}>
@@ -25,7 +27,10 @@ const SlidingCategoryCard = ({ title, NoOfStories, NoOfReads, imageURL }) => {
                         rowSpacing={1}
                         columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                         <Grid xs={12} display="flex" justifyContent="center" alignItems="center" mb="10px" mt="10px" >
-                            <Typography variant="h5">{title} </Typography>
+                            <Typography variant="h5"
+                            onClick={() => { navigate(`/search?genre=${title}`) }}
+                            style={{ cursor: "pointer" }}
+                            >{title} </Typography>
                         </Grid>
                         <Grid xs={12} display="flex" justifyContent="center" alignItems="center" >
                             <Stack direction="row"   >
