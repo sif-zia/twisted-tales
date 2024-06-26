@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"  # Adjust the ports according to your backend application
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - MONGO_URI=mongodb+srv://sifzia2002:YejR6YW04Ek8jiaj@sifunicluster.sw3ecm0.mongodb.net/
+      - secretKey=LiterallyVeryVeryVerySecretKey
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Adjust the ports according to your frontend application
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
